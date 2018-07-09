@@ -59,13 +59,6 @@ away_lineup <- away_scraper(game)
 batter_steamer <- read.csv("steamer_batter_2018.csv")
 pitcher_steamer <- read.csv("steamer_pitcher_2018.csv")
 
-# read today's mlb lineups
-
-df <- read.csv("MLB Lineups Today.csv")
-
-# pulling away leadoff batter and home starting pitcher
-
-
 at_bat <- function(batter)
 {
 away_batter <- data.frame(away_lineup[batter,1], stringsAsFactors = FALSE)
@@ -594,18 +587,13 @@ home_team <- function(game)
   
   # read today's mlb lineups
   
-  df <- read.csv("MLB Lineups Today.csv")
-  
-  # pulling away leadoff batter and home starting pitcher
-  
-  
   at_bat <- function(batter)
   {
     home_batter <- data.frame(home_lineup[batter,1], stringsAsFactors = FALSE)
     colnames(home_batter) <- "player"
     away_pitcher <- data.frame(starters[1,1], stringsAsFactors = FALSE)
     away_pitcher <- data.frame(lapply(away_pitcher, trimws), stringsAsFactors = FALSE)
-    colnames(home_pitcher) <- "player"
+    colnames(away_pitcher) <- "player"
     
     # parsing data frame for home pitcher with all play outcomes by split
     
@@ -1103,7 +1091,7 @@ home_team <- function(game)
                             HR = integer(9),
                             Runs = integer(9),
                             RBI = integer(9))
-    box_score$Name <- away_lineup$Name
+    box_score$Name <- home_lineup$Name
     box_score <- test()
     box_score_total <- box_score_total + box_score[,-1]
     i <- i + 1
