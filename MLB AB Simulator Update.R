@@ -383,9 +383,9 @@ test <- function()
 while (inning < 9) 
 {
 outs <- 0
-first_base <- 0
-second_base <- 0
-third_base <- 0
+first_base <- ""
+second_base <- ""
+third_base <- ""
 while (outs < 3)
 {
 sim_PA_result <- at_bat(batter)
@@ -399,20 +399,26 @@ if(sim_PA_result[1,1] == 'bo' | sim_PA_result[1,1] == 'so')
 if(sim_PA_result[1,1] == 'bb')
 {
   runs_before <- runs
-  if (third_base == 1 && second_base == 1)
+  if (third_base != "" && second_base != "" && first_base != "")
   {
     runs <- runs + 1
-    third_base <- 1
+    box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+    third_base <- second_base
+    second_base <- first_base
+    first_base <= ""
   }
-  if (second_base == 1 && first_base == 1)
+  if (third_base == "" && second_base != "" && first_base != "")
   {
-    third_base <- 1
+    third_base <- second_base
+    second_base <- first_base
+    first_base <- ""
   }
-  if (first_base == 1)
+  if (third_base == "" && second_base == "" && first_base != "")
   {
-    second_base <- 1
+    second_base <- first_base
+    first_base <- ""
   }
-  first_base <- 1
+  first_base <- box_score$Name[batter]
   runs_diff <- runs - runs_before
   box_score$PAs[batter] <- box_score$PAs[batter] + 1
   box_score$BB[batter] <- box_score$BB[batter] + 1
@@ -422,20 +428,22 @@ if(sim_PA_result[1,1] == 'bb')
 if(sim_PA_result[1,1] == '1b')
 {
   runs_before <- runs
-  if (third_base == 1)
+  if (third_base != '')
   {
     runs <- runs + 1
-    third_base <- 0
+    box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+    third_base <- ""
   }
-  if (second_base == 1)
+  if (second_base == "")
   {
-    third_base <- 1
+    third_base <- second_base
+    second_base <- ""
   }
-  if (first_base == 1)
+  if (first_base != "")
   {
-    second_base <- 1
+    second_base <- first_base
   }
-  first_base <- 1
+  first_base <- box_score$Name[batter]
   runs_diff <- runs - runs_before
   box_score$PAs[batter] <- box_score$PAs[batter] + 1
   box_score$Hits[batter] <- box_score$Hits[batter] + 1
@@ -446,21 +454,24 @@ if(sim_PA_result[1,1] == '1b')
 if(sim_PA_result[1,1] == '2b')
 {
   runs_before <- runs
-  if (third_base == 1)
+  if (third_base != '')
   {
     runs <- runs + 1
-    third_base <- 0
+    box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+    third_base <- ""
   }
-  if (second_base == 1)
+  if (second_base != "")
   {
     runs <- runs + 1
+    box_score$Runs[box_score$Name == second_base] <- box_score$Runs[box_score$Name == second_base] + 1
+    second_base <- ""
   }
-  if (first_base == 1)
+  if (first_base != "")
   {
-    third_base <- 1
-    first_base <- 0
+    third_base <- first_base
+    first_base <- ""
   }
-  second_base <- 1
+  second_base <- box_score$Name[batter]
   runs_diff <- runs - runs_before
   box_score$PAs[batter] <- box_score$PAs[batter] + 1
   box_score$Hits[batter] <- box_score$Hits[batter] + 1
@@ -472,22 +483,25 @@ if(sim_PA_result[1,1] == '2b')
 if(sim_PA_result[1,1] == '3b')
 {
   runs_before <- runs
-  if (third_base == 1)
+  if (third_base != '')
   {
     runs <- runs + 1
-    third_base <- 0
+    box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+    third_base <- ""
   }
-  if (second_base == 1)
+  if (second_base != "")
   {
     runs <- runs + 1
-    second_base <- 0
+    box_score$Runs[box_score$Name == second_base] <- box_score$Runs[box_score$Name == second_base] + 1
+    second_base <- ""
   }
-  if (first_base == 1)
+  if (first_base != "")
   {
     runs <- runs + 1
-    first_base <- 0
+    box_score$Runs[box_score$Name == first_base] <- box_score$Runs[box_score$Name == first_base] + 1
+    first_base <- ""
   }
-  third_base <- 1
+  third_base <- box_score$Name[batter]
   runs_diff <- runs - runs_before
   box_score$PAs[batter] <- box_score$PAs[batter] + 1
   box_score$Hits[batter] <- box_score$Hits[batter] + 1
@@ -497,23 +511,27 @@ if(sim_PA_result[1,1] == '3b')
 if(sim_PA_result[1,1] == 'hr')
 {
   runs_before <- runs
-  if (third_base == 1)
+  if (third_base != '')
   {
     runs <- runs + 1
-    third_base <- 0
+    box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+    third_base <- ""
   }
-  if (second_base == 1)
+  if (second_base != "")
   {
     runs <- runs + 1
-    second_base <- 0
+    box_score$Runs[box_score$Name == second_base] <- box_score$Runs[box_score$Name == second_base] + 1
+    second_base <- ""
   }
-  if (first_base == 1)
+  if (first_base != "")
   {
     runs <- runs + 1
-    first_base <- 0
+    box_score$Runs[box_score$Name == first_base] <- box_score$Runs[box_score$Name == first_base] + 1
+    first_base <- ""
   }
   runs <- runs + 1
   runs_diff <- runs - runs_before
+  box_score$Runs[batter] <- box_score$Runs[batter] + 1
   box_score$PAs[batter] <- box_score$PAs[batter] + 1
   box_score$Hits[batter] <- box_score$Hits[batter] + 1
   box_score$HR[batter] <- box_score$HR[batter] + 1
@@ -911,9 +929,9 @@ home_team <- function(game)
     while (inning < 9) 
     {
       outs <- 0
-      first_base <- 0
-      second_base <- 0
-      third_base <- 0
+      first_base <- ""
+      second_base <- ""
+      third_base <- ""
       while (outs < 3)
       {
         sim_PA_result <- at_bat(batter)
@@ -927,20 +945,26 @@ home_team <- function(game)
         if(sim_PA_result[1,1] == 'bb')
         {
           runs_before <- runs
-          if (third_base == 1 && second_base == 1)
+          if (third_base != "" && second_base != "" && first_base != "")
           {
             runs <- runs + 1
-            third_base <- 1
+            box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+            third_base <- second_base
+            second_base <- first_base
+            first_base <= ""
           }
-          if (second_base == 1 && first_base == 1)
+          if (third_base == "" && second_base != "" && first_base != "")
           {
-            third_base <- 1
+            third_base <- second_base
+            second_base <- first_base
+            first_base <- ""
           }
-          if (first_base == 1)
+          if (third_base == "" && second_base == "" && first_base != "")
           {
-            second_base <- 1
+            second_base <- first_base
+            first_base <- ""
           }
-          first_base <- 1
+          first_base <- box_score$Name[batter]
           runs_diff <- runs - runs_before
           box_score$PAs[batter] <- box_score$PAs[batter] + 1
           box_score$BB[batter] <- box_score$BB[batter] + 1
@@ -950,20 +974,22 @@ home_team <- function(game)
         if(sim_PA_result[1,1] == '1b')
         {
           runs_before <- runs
-          if (third_base == 1)
+          if (third_base != '')
           {
             runs <- runs + 1
-            third_base <- 0
+            box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+            third_base <- ""
           }
-          if (second_base == 1)
+          if (second_base == "")
           {
-            third_base <- 1
+            third_base <- second_base
+            second_base <- ""
           }
-          if (first_base == 1)
+          if (first_base != "")
           {
-            second_base <- 1
+            second_base <- first_base
           }
-          first_base <- 1
+          first_base <- box_score$Name[batter]
           runs_diff <- runs - runs_before
           box_score$PAs[batter] <- box_score$PAs[batter] + 1
           box_score$Hits[batter] <- box_score$Hits[batter] + 1
@@ -974,21 +1000,24 @@ home_team <- function(game)
         if(sim_PA_result[1,1] == '2b')
         {
           runs_before <- runs
-          if (third_base == 1)
+          if (third_base != '')
           {
             runs <- runs + 1
-            third_base <- 0
+            box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+            third_base <- ""
           }
-          if (second_base == 1)
+          if (second_base != "")
           {
             runs <- runs + 1
+            box_score$Runs[box_score$Name == second_base] <- box_score$Runs[box_score$Name == second_base] + 1
+            second_base <- ""
           }
-          if (first_base == 1)
+          if (first_base != "")
           {
-            third_base <- 1
-            first_base <- 0
+            third_base <- first_base
+            first_base <- ""
           }
-          second_base <- 1
+          second_base <- box_score$Name[batter]
           runs_diff <- runs - runs_before
           box_score$PAs[batter] <- box_score$PAs[batter] + 1
           box_score$Hits[batter] <- box_score$Hits[batter] + 1
@@ -1000,22 +1029,25 @@ home_team <- function(game)
         if(sim_PA_result[1,1] == '3b')
         {
           runs_before <- runs
-          if (third_base == 1)
+          if (third_base != '')
           {
             runs <- runs + 1
-            third_base <- 0
+            box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+            third_base <- ""
           }
-          if (second_base == 1)
+          if (second_base != "")
           {
             runs <- runs + 1
-            second_base <- 0
+            box_score$Runs[box_score$Name == second_base] <- box_score$Runs[box_score$Name == second_base] + 1
+            second_base <- ""
           }
-          if (first_base == 1)
+          if (first_base != "")
           {
             runs <- runs + 1
-            first_base <- 0
+            box_score$Runs[box_score$Name == first_base] <- box_score$Runs[box_score$Name == first_base] + 1
+            first_base <- ""
           }
-          third_base <- 1
+          third_base <- box_score$Name[batter]
           runs_diff <- runs - runs_before
           box_score$PAs[batter] <- box_score$PAs[batter] + 1
           box_score$Hits[batter] <- box_score$Hits[batter] + 1
@@ -1025,22 +1057,26 @@ home_team <- function(game)
         if(sim_PA_result[1,1] == 'hr')
         {
           runs_before <- runs
-          if (third_base == 1)
+          if (third_base != '')
           {
             runs <- runs + 1
-            third_base <- 0
+            box_score$Runs[box_score$Name == third_base] <- box_score$Runs[box_score$Name == third_base] + 1
+            third_base <- ""
           }
-          if (second_base == 1)
+          if (second_base != "")
           {
             runs <- runs + 1
-            second_base <- 0
+            box_score$Runs[box_score$Name == second_base] <- box_score$Runs[box_score$Name == second_base] + 1
+            second_base <- ""
           }
-          if (first_base == 1)
+          if (first_base != "")
           {
             runs <- runs + 1
-            first_base <- 0
+            box_score$Runs[box_score$Name == first_base] <- box_score$Runs[box_score$Name == first_base] + 1
+            first_base <- ""
           }
           runs <- runs + 1
+          box_score$Runs[batter] <- box_score$Runs[batter] + 1
           runs_diff <- runs - runs_before
           box_score$PAs[batter] <- box_score$PAs[batter] + 1
           box_score$Hits[batter] <- box_score$Hits[batter] + 1
@@ -1103,8 +1139,8 @@ home_team <- function(game)
 }
 
 
-rangers <- away_team(4)
-red_sox <- home_team(4)
+mariners <- away_team(9)
+angels <- home_team(9)
 
 ##write.csv(sim_PA, "MLB Simulated AB.csv")
 
