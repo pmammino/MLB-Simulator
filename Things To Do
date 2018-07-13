@@ -1,0 +1,14 @@
+Things To Implement
+
+  1. Improved Baserunning Control, ability to take extra bases
+  
+  2. Remove starter functionality and add in bullpens
+      pitches per start: https://www.baseball-reference.com/leagues/MLB/2018-starter-pitching.shtml
+      pitches per at bat: https://www.baseball-reference.com/leagues/MLB/2018-pitches-pitching.shtml
+      
+      Set rules to iterate pitch count based on average pitches per at bat
+      Once pitcher reaches x number of pitches remove from game switch pitcher
+      
+  3. Optimize Code to run alternating innings and actually simulate a game
+  
+  4. Park factors, weather, etc
