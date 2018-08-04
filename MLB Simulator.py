@@ -35,6 +35,19 @@ for i in soup2.select('.shrt'):
     
 teams = pandas.DataFrame(list2)
 
+res3 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
+soup3 = bs4.BeautifulSoup(res3.text, 'lxml')
+soup3.select('.status')
+
+list3 = []
+
+for i in soup3.select('.status'):
+    list3.append(i.text)
+    
+handedness = pandas.DataFrame(list3)
+
+print(handedness)
+
 #
 #
 # scrape Steamer projection files
@@ -42,25 +55,24 @@ teams = pandas.DataFrame(list2)
 batter_steamer = pandas.read_csv("steamer_batter_2018.csv")
 pitcher_steamer = pandas.read_csv("steamer_pitcher_2018.csv")
 
-stop = timeit.default_timer()
-
-print(stop - start)
-
-print(lineups)
-
+lineups = pandas.merge(lineups, batter_steamer, how = 'left', left_on = '0', right_on = 'name')
 
 #
 #
 # manipulate lineup scrape into each specific team's lineup
 
 if lineups.shape[0] > 10:
-    away_1 = lineups[:10]
-    home_1 = lineups[10:20]    
+    away_1_team = teams[:1]
+    away_1_lineup = lineups[:10]
+    away_1 = away_1_team.append(away_1_lineup)
+    home_1_team = teams[1:2]
+    home_1_lineup = lineups[10:20]  
+    home_1 = home_1_team.append(home_1_lineup)
 
 stop = timeit.default_timer()
 
 print(stop - start)
-
+print(home_1)
 
 #
 #
