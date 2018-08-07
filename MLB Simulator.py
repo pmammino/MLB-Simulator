@@ -7,6 +7,14 @@ start = timeit.default_timer()
 
 #
 #
+# scrape Steamer projection files
+
+batter_steamer = pandas.read_csv("steamer_batter_2018.csv")
+pitcher_steamer = pandas.read_csv("steamer_pitcher_2018.csv")
+mlbamid_database = pandas.read_csv("MLBAMID Database.csv")
+
+#
+#
 # pull lineups from Rotogrinders
 
 res = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
@@ -17,7 +25,16 @@ list1 = []
 for i in soup.select('.player-popup'):
     list1.append(i.text)
     
-lineups = pandas.DataFrame(list1)
+players = pandas.DataFrame(list1)
+
+lineups = players[players.index % 10 != 0]
+lineups.columns = ["name"]
+pitchers = players[players.index % 10 == 0]
+pitchers.columns = ["name"]
+lineups = pandas.DataFrame(lineups)
+lineups.reset_index(drop=True, inplace=True)
+pitchers = pandas.DataFrame(pitchers)
+pitchers.reset_index(drop=True, inplace=True)
 
 #
 #
@@ -44,6 +61,8 @@ for i in soup3.select('span.status span.stats'):
 handedness = pandas.DataFrame(list3)
 handedness = handedness[0].str.strip()
 handedness = pandas.DataFrame(handedness)
+handedness.columns = ["Bats"]
+handedness = pandas.DataFrame(handedness)
 
 list4 = []
 
@@ -53,32 +72,38 @@ for i in soup3.select('div[class="pitcher players"] span[class="stats"]'):
 pitcher_handedness = pandas.DataFrame(list4)
 pitcher_handedness = pitcher_handedness[0].str.strip()
 pitcher_handedness = pandas.DataFrame(pitcher_handedness)
+pitcher_handedness.columns = ["Throws"]
+pitcher_handedness = pandas.DataFrame(pitcher_handedness)
 
-#
-#
-# scrape Steamer projection files
+lineups["Bats"] = handedness
+pitchers["Throws"] = pitcher_handedness
 
-batter_steamer = pandas.read_csv("steamer_batter_2018.csv")
-pitcher_steamer = pandas.read_csv("steamer_pitcher_2018.csv")
 
-lineups = pandas.merge(lineups, batter_steamer, how = 'left', left_on = '0', right_on = 'name')
+#lineups = lineups[["name", "Bats"]].merge(batter_steamer[["name", "mlbamid"]], on = "name", how = "left")
+#lineups = lineups.drop_duplicates(keep = "first")
+
+
+lineups = pandas.merge(lineups, mlbamid_database, how = 'left')
+pitchers = pandas.merge(lineups, mlbamid_database, how = 'left')
+
+#lineups["M_ID"] = ["1", lineups["Bats"], lineups["mlbamid"]]
 
 #
 #
 # manipulate lineup scrape into each specific team's lineup
 
 if lineups.shape[0] > 10:
-    away_1_team = teams[:1]
-    away_1_lineup = lineups[:10]
-    away_1 = away_1_team.append(away_1_lineup)
-    home_1_team = teams[1:2]
-    home_1_lineup = lineups[10:20]  
-    home_1 = home_1_team.append(home_1_lineup)
+    away_lineup1 = lineups[:9]
+    away_pitcher1 = pitchers[:1]
+    home_lineup1 = lineups[10:19]
+    home_pitcher1 = pitchers[1:2]
 
-stop = timeit.default_timer()
+print(away_pitcher1)
+print(away_lineup1)
+print(home_pitcher1)
+print(home_lineup1)
 
-print(stop - start)
-print(home_1)
+away_batter = pandas.DataFrame(away_lineup1.iloc[0])
 
 #
 #
@@ -128,4 +153,3 @@ print(home_1)
 stop = timeit.default_timer()
 
 print(stop - start)
-
