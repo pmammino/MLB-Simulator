@@ -11,7 +11,7 @@ start = timeit.default_timer()
 
 batter_steamer = pandas.read_csv("steamer_batter_2018.csv")
 pitcher_steamer = pandas.read_csv("steamer_pitcher_2018.csv")
-mlbamid_database = pandas.read_csv("MLBAMID Database.csv")
+
 
 #
 #
@@ -22,19 +22,25 @@ soup = bs4.BeautifulSoup(res.text, 'lxml')
 
 list1 = []
 
-for i in soup.select('.player-popup'):
+for i in soup.select('.pname'):
     list1.append(i.text)
     
-players = pandas.DataFrame(list1)
-
-lineups = players[players.index % 10 != 0]
-lineups.columns = ["name"]
-pitchers = players[players.index % 10 == 0]
-pitchers.columns = ["name"]
+lineups = pandas.DataFrame(list1)
+lineups = lineups[0].str.strip()
 lineups = pandas.DataFrame(lineups)
-lineups.reset_index(drop=True, inplace=True)
+
+lineups.columns = ["name"]
+
+list2 = []
+
+for i in soup.select('div[class="pitcher players"] a[class="player-popup"]'):
+    list2.append(i.text)
+    
+pitchers = pandas.DataFrame(list2)
+pitchers = pitchers[0].str.strip()
 pitchers = pandas.DataFrame(pitchers)
-pitchers.reset_index(drop=True, inplace=True)
+
+pitchers.columns = ["name"]
 
 #
 #
@@ -43,33 +49,33 @@ pitchers.reset_index(drop=True, inplace=True)
 res2 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
 soup2 = bs4.BeautifulSoup(res2.text, 'lxml')
 
-list2 = []
+list3 = []
 
 for i in soup2.select('.shrt'):
-    list2.append(i.text)
+    list3.append(i.text)
     
-teams = pandas.DataFrame(list2)
+teams = pandas.DataFrame(list3)
 
 res3 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
 soup3 = bs4.BeautifulSoup(res3.text, 'lxml')
 
-list3 = []
+list4 = []
 
 for i in soup3.select('span.status span.stats'):
-    list3.append(i.text)
+    list4.append(i.text)
     
-handedness = pandas.DataFrame(list3)
+handedness = pandas.DataFrame(list4)
 handedness = handedness[0].str.strip()
 handedness = pandas.DataFrame(handedness)
 handedness.columns = ["Bats"]
 handedness = pandas.DataFrame(handedness)
 
-list4 = []
+list5 = []
 
 for i in soup3.select('div[class="pitcher players"] span[class="stats"]'):
-    list4.append(i.text)
+    list5.append(i.text)
     
-pitcher_handedness = pandas.DataFrame(list4)
+pitcher_handedness = pandas.DataFrame(list5)
 pitcher_handedness = pitcher_handedness[0].str.strip()
 pitcher_handedness = pandas.DataFrame(pitcher_handedness)
 pitcher_handedness.columns = ["Throws"]
@@ -78,15 +84,11 @@ pitcher_handedness = pandas.DataFrame(pitcher_handedness)
 lineups["Bats"] = handedness
 pitchers["Throws"] = pitcher_handedness
 
+merge = batter_steamer[["name","mlbamid"]].drop_duplicates()
 
-#lineups = lineups[["name", "Bats"]].merge(batter_steamer[["name", "mlbamid"]], on = "name", how = "left")
-#lineups = lineups.drop_duplicates(keep = "first")
+lineups_merged = lineups.merge(merge, on = "name", how = "left")
 
-
-lineups = pandas.merge(lineups, mlbamid_database, how = 'left')
-pitchers = pandas.merge(lineups, mlbamid_database, how = 'left')
-
-#lineups["M_ID"] = ["1", lineups["Bats"], lineups["mlbamid"]]
+test = lineups_merged[lineups_merged['mlbamid'].isnull()]
 
 #
 #
