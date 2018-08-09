@@ -133,7 +133,27 @@ away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)
 
 def at_bat(pitcher, hitter):
     
-    if pitcher["Handedness"] == "R"  
+    if away_pitcher["Throws"] == "R":
+       batter_p1b = home_lineup["1bR"]
+       batter_p2b = home_lineup["2bR"]
+       batter_p3b = home_lineup["3bR"]
+       batter_phr = home_lineup["hrR"]
+       batter_pbb = home_lineup["bbR"]
+       batter_pso = home_lineup["kR"]
+       batter_pbo = home_lineup["boR"]
+    elif away_pitcher["Throws"] == "L":
+        batter_p1b = home_lineup["1bL"]
+        batter_p2b = home_lineup["2bL"]
+        batter_p3b = home_lineup["3bL"]
+        batter_phr = home_lineup["hrL"]
+        batter_pbb = home_lineup["bbL"]
+        batter_pso = home_lineup["kL"]
+        batter_pbo = home_lineup["boL"]
+    
+    return [batter_p1b, batter_p2b, batter_p3b, batter_phr, batter_pbb, batter_pso, batter_pbo]
+
+def oddsCalc(batter, pitcher, league):
+    
     odds1b = ((batter_p1b / (1 - batter_p1b)) * (pitcher_p1b / (1 - pitcher_p1b)) / (league_p1b / (1 - league_p1b)))
     odds2b = ((batter_p2b / (1 - batter_p2b)) * (pitcher_p2b / (1 - pitcher_p2b)) / (league_p2b / (1 - league_p2b)))
     odds3b = ((batter_p3b / (1 - batter_p3b)) * (pitcher_p3b / (1 - pitcher_p3b)) / (league_p3b / (1 - league_p3b)))
@@ -158,6 +178,9 @@ def at_bat(pitcher, hitter):
     npbb = pbb / total
     npso = pso / total
     npbo = pbo / total
+    
+    return [np1b, np2b, np3b, nphr, npbb, npso, npbo]
+
 
 
 
