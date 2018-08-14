@@ -88,6 +88,26 @@ list5 = []
 for i in soup3.select('div[class="pitcher players"] span[class="stats"]'):
     list5.append(i.text)
     
+res4 = requests.get("https://www.fangraphs.com/leaderssplits.aspx?splitArr=1,3,32&strgroup=season&statgroup=1&startDate=2018-03-01&endDate=2018-11-01&filter=&position=B&statType=mlb&autoPt=false&players=&pg=0&pageItems=30&sort=22,1")
+soup4 = BeautifulSoup(res4.content,'lxml')
+table = soup4.find_all('table')[0] 
+pitcher_LL = pd.read_html(str(table))
+
+res5 = requests.get("https://www.fangraphs.com/leaderssplits.aspx?splitArr=3,32,2&strgroup=season&statgroup=1&startDate=2018-03-01&endDate=2018-11-01&filter=&position=B&statType=mlb&autoPt=false&players=&pg=0&pageItems=30&sort=22,1")
+soup5 = BeautifulSoup(res5.content,'lxml')
+table2 = soup5.find_all('table')[0] 
+pitcher_RL = pd.read_html(str(table2))
+
+res6 = requests.get("https://www.fangraphs.com/leaderssplits.aspx?splitArr=32,1,4&strgroup=season&statgroup=1&startDate=2018-03-01&endDate=2018-11-01&filter=&position=B&statType=mlb&autoPt=false&players=&pg=0&pageItems=30&sort=22,1")
+soup6 = BeautifulSoup(res6.content,'lxml')
+table3 = soup6.find_all('table')[0] 
+pitcher_LR = pd.read_html(str(table3))
+
+res7 = requests.get("https://www.fangraphs.com/leaderssplits.aspx?splitArr=32,4,2&strgroup=season&statgroup=1&startDate=2018-03-01&endDate=2018-11-01&filter=&position=B&statType=mlb&autoPt=false&players=&pg=0&pageItems=30&sort=22,1")
+soup7 = BeautifulSoup(res7.content,'lxml')
+table4 = soup7.find_all('table')[0] 
+pitcher_RR = pd.read_html(str(table4))
+    
 pitcher_handedness = pandas.DataFrame(list5)
 pitcher_handedness = pitcher_handedness[0].str.strip()
 pitcher_handedness = pandas.DataFrame(pitcher_handedness)
