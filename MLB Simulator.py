@@ -167,6 +167,14 @@ def at_bat(pitcher, hitter):
        pitcher_pbb = pitcher.at[0,"bbL"]
        pitcher_pso = pitcher.at[0,"kL"]
        pitcher_pbo = pitcher.at[0,"boL"]
+        
+    league_p1b <- .152056268409
+    league_p2b <- .045140889455
+    league_p3b <- .004727358249
+    league_phr <- .026802180461
+    league_pbb <- .081558771793
+    league_pso <- .198009085542
+    league_pbo <- .491705446091
 
     odds1b = ((batter_p1b / (1 - batter_p1b)) * (pitcher_p1b / (1 - pitcher_p1b)) / (league_p1b / (1 - league_p1b)))
     odds2b = ((batter_p2b / (1 - batter_p2b)) * (pitcher_p2b / (1 - pitcher_p2b)) / (league_p2b / (1 - league_p2b)))
