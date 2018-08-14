@@ -204,8 +204,7 @@ list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n
 
 
   
-away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)  
-pa_result = at_bat(home_pitcher,pandas.DataFrame(away_lineup.iloc[0]).T.reset_index(drop = True))
+away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(2)  
 
 def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     inning = 1
@@ -215,39 +214,38 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     away_runs = 0
     home_runs = 0
     
-    while (inning < 9):
-      if (half = 'top'):
+    while (inning < 10):
+      if (half == 'top'):
         outs = 0
         first_base = ''
         second_base = ''
         third_base = ''
-        while (outs > 3):
+        while (outs < 3):
           pa_result = at_bat(home_pitcher,pandas.DataFrame(away_lineup.iloc[away_batter]).T.reset_index(drop = True))
-          
-          if(pa_result == 'bo' | pa_result == 'so'):
+          if(pa_result == 'bo' or pa_result == 'so'):
             outs = outs + 1
             
           if(pa_result == 'bb'):
-            if (third_base != '' && second_base != '' && first_base != ''):
+            if (third_base != '' and second_base != '' and first_base != ''):
               away_runs = away_runs + 1
               third_base = second_base
               second_base = first_base
               first_base = ''
-            elseif (third_base == '' && second_base != '' && first_base != ''):
+            elif (third_base == '' and second_base != '' and first_base != ''):
               third_base = second_base
               second_base = first_base
               first_base = ''
-            elseif (third_base == '' && second_base == '' && first_base != ''):
+            elif (third_base == '' and second_base == '' and first_base != ''):
               second_base = first_base
               first_base = ''
-            elseif (third_base != '' && second_base == '' && first_base != ''):
+            elif (third_base != '' and second_base == '' and first_base != ''):
               second_base = first_base
               first_base = ''
             else:
               third_base = third_base
               second_base = second_base
               first_base = ''
-            first_base = away_lineup.at[away_hitter,"Name"]
+            first_base = away_lineup.at[away_batter,"name"]
             
           if(pa_result == '1b'):
             if (third_base != ''):
@@ -259,7 +257,7 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
             if (first_base != ''):
               second_base = first_base
               first_base = ''
-            first_base = away_lineup.at[away_hitter,"Name"]
+            first_base = away_lineup.at[away_batter,"name"]
             
           if(pa_result == '2b'):
             if (third_base != ''):
@@ -271,7 +269,7 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
             if (first_base != ''):
               third_base = first_base
               first_base = ''
-            second_base = away_lineup.at[away_hitter,"Name"] 
+            second_base = away_lineup.at[away_batter,"name"] 
                         
           if(pa_result == '3b'):
             if (third_base != ''):
@@ -283,7 +281,7 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
             if (first_base != ''):
               away_runs = away_runs + 1
               first_base = ''
-            third_base = away_lineup.at[away_hitter,"Name"]
+            third_base = away_lineup.at[away_batter,"name"]
                   
           if(pa_result == 'hr'):
             if (third_base != ''):
@@ -299,10 +297,102 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
           if (away_batter == 8):
             away_batter = 0
           else:
-            way_batter = away_batter + 1
+            away_batter = away_batter + 1
+      
             
-        half = 'bottom'
-      if (half == 'bottom')
+      half = 'bottom'
+      if (inning == 9 and half == 'bottom' and (home_runs > away_runs)):
+          break
+      if (half == 'bottom'):
+        outs = 0
+        first_base = ''
+        second_base = ''
+        third_base = ''
+        while (outs < 3):
+          pa_result = at_bat(away_pitcher,pandas.DataFrame(home_lineup.iloc[home_batter]).T.reset_index(drop = True))
+          
+          if(pa_result == 'bo' or pa_result == 'so'):
+            outs = outs + 1
+            
+          if(pa_result == 'bb'):
+            if (third_base != '' and second_base != '' and first_base != ''):
+              home_runs = home_runs + 1
+              third_base = second_base
+              second_base = first_base
+              first_base = ''
+            elif (third_base == '' and second_base != '' and first_base != ''):
+              third_base = second_base
+              second_base = first_base
+              first_base = ''
+            elif (third_base == '' and second_base == '' and first_base != ''):
+              second_base = first_base
+              first_base = ''
+            elif (third_base != '' and second_base == '' and first_base != ''):
+              second_base = first_base
+              first_base = ''
+            else:
+              third_base = third_base
+              second_base = second_base
+              first_base = ''
+            first_base = away_lineup.at[home_batter,"name"]
+            
+          if(pa_result == '1b'):
+            if (third_base != ''):
+              home_runs = home_runs + 1
+              third_base = ''
+            if (second_base != ''):
+              third_base = second_base
+              second_base = ''
+            if (first_base != ''):
+              second_base = first_base
+              first_base = ''
+            first_base = home_lineup.at[home_batter,"name"]
+            
+          if(pa_result == '2b'):
+            if (third_base != ''):
+              home_runs = home_runs + 1
+              third_base = ''
+            if (second_base != ''):
+              home_runs = home_runs + 1
+              second_base = ''
+            if (first_base != ''):
+              third_base = first_base
+              first_base = ''
+            second_base = home_lineup.at[home_batter,"name"] 
+                        
+          if(pa_result == '3b'):
+            if (third_base != ''):
+              home_runs = home_runs + 1
+              third_base = ''
+            if (second_base != ''):
+              home_runs = home_runs + 1
+              second_base = ''
+            if (first_base != ''):
+              home_runs = home_runs + 1
+              first_base = ''
+            third_base = home_lineup.at[home_batter,"name"]
+                  
+          if(pa_result == 'hr'):
+            if (third_base != ''):
+              home_runs = home_runs + 1
+              third_base = ''
+            if (second_base != ''):
+              home_runs = home_runs + 1
+              second_base = ''
+            if (first_base != ''):
+              home_runs = home_runs + 1
+              first_base = ''
+          
+          if (home_batter == 8):
+            home_batter = 0
+          else:
+            home_batter = home_batter + 1
+        half = 'top'
+        inning = inning + 1
+    
+    return(away_runs, home_runs)    
+        
+bos_runs, phi_runs = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)                   
 
 stop = timeit.default_timer()
 
