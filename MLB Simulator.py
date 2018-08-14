@@ -89,24 +89,24 @@ for i in soup3.select('div[class="pitcher players"] span[class="stats"]'):
     list5.append(i.text)
     
 res4 = requests.get("https://www.fangraphs.com/leaderssplits.aspx?splitArr=1,3,32&strgroup=season&statgroup=1&startDate=2016-03-01&endDate=2018-11-01&filter=&position=B&statType=mlb&autoPt=false&players=&pg=0&pageItems=30&sort=22,1")
-soup4 = BeautifulSoup(res4.content,'lxml')
+soup4 = bs4.BeautifulSoup(res4.content,'lxml')
 table = soup4.find_all('table')[0] 
-pitcher_LL = pd.read_html(str(table))
+pitcher_LL = pandas.read_html(str(table))
 
 res5 = requests.get("https://www.fangraphs.com/leaderssplits.aspx?splitArr=3,32,2&strgroup=season&statgroup=1&startDate=2016-03-01&endDate=2018-11-01&filter=&position=B&statType=mlb&autoPt=false&players=&pg=0&pageItems=30&sort=22,1")
-soup5 = BeautifulSoup(res5.content,'lxml')
+soup5 = bs4.BeautifulSoup(res5.content,'lxml')
 table2 = soup5.find_all('table')[0] 
-pitcher_RL = pd.read_html(str(table2))
+pitcher_RL = pandas.read_html(str(table2))
 
 res6 = requests.get("https://www.fangraphs.com/leaderssplits.aspx?splitArr=32,1,4&strgroup=season&statgroup=1&startDate=2016-03-01&endDate=2018-11-01&filter=&position=B&statType=mlb&autoPt=false&players=&pg=0&pageItems=30&sort=22,1")
-soup6 = BeautifulSoup(res6.content,'lxml')
+soup6 = bs4.BeautifulSoup(res6.content,'lxml')
 table3 = soup6.find_all('table')[0] 
-pitcher_LR = pd.read_html(str(table3))
+pitcher_LR = pandas.read_html(str(table3))
 
 res7 = requests.get("https://www.fangraphs.com/leaderssplits.aspx?splitArr=32,4,2&strgroup=season&statgroup=1&startDate=2016-03-01&endDate=2018-11-01&filter=&position=B&statType=mlb&autoPt=false&players=&pg=0&pageItems=30&sort=22,1")
-soup7 = BeautifulSoup(res7.content,'lxml')
+soup7 = bs4.BeautifulSoup(res7.content,'lxml')
 table4 = soup7.find_all('table')[0] 
-pitcher_RR = pd.read_html(str(table4))
+pitcher_RR = pandas.read_html(str(table4))
     
 pitcher_handedness = pandas.DataFrame(list5)
 pitcher_handedness = pitcher_handedness[0].str.strip()
@@ -228,7 +228,7 @@ def at_bat(pitcher, hitter):
     
     return(result)
   
-pa_result = at_bat(home_pitcher,pandas.Dataframe(away_lineup.iloc[0]).T.reset_index(drop = True))
+pa_result = at_bat(home_pitcher,pandas.DataFrame(away_lineup.iloc[0]).T.reset_index(drop = True))
 
 
 stop = timeit.default_timer()
