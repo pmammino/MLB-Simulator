@@ -208,7 +208,7 @@ def at_bat(pitcher, hitter):
     
     return(result)
   
-pa_result = at_bat(away_lineup.iloc[0], home_pitcher)
+pa_result = at_bat(home_pitcher,away_lineup.iloc[0])
 
 
 stop = timeit.default_timer()
