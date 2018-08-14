@@ -15,6 +15,82 @@ def set_lineups(n):
   home_pitcher = pandas.DataFrame(pitchers.iloc[n+1]).T.reset_index(drop = True)
   return(away_lineup, home_lineup, away_pitcher, home_pitcher)
 
+def at_bat(pitcher, hitter):
+    if pitcher.at[0,"Throws"] == "R":
+       batter_p1b = hitter.at[0,"1bR"]
+       batter_p2b = hitter.at[0,"2bR"]
+       batter_p3b = hitter.at[0,"3bR"]
+       batter_phr = hitter.at[0,"hrR"]
+       batter_pbb = hitter.at[0,"bbR"]
+       batter_pso = hitter.at[0,"kR"]
+       batter_pbo = hitter.at[0,"boR"]
+    else:
+       batter_p1b = hitter.at[0,"1bL"]
+       batter_p2b = hitter.at[0,"2bL"]
+       batter_p3b = hitter.at[0,"3bL"]
+       batter_phr = hitter.at[0,"hrL"]
+       batter_pbb = hitter.at[0,"bbL"]
+       batter_pso = hitter.at[0,"kL"]
+       batter_pbo = hitter.at[0,"boL"]
+        
+    if hitter.at[0,"Bats"] == "R" or (hitter.at[0,"Bats"] == "S" and pitcher.at[0,"Throws"] == "L"):
+       pitcher_p1b = pitcher.at[0,"1bR"]
+       pitcher_p2b = pitcher.at[0,"2bR"]
+       pitcher_p3b = pitcher.at[0,"3bR"]
+       pitcher_phr = pitcher.at[0,"hrR"]
+       pitcher_pbb = pitcher.at[0,"bbR"]
+       pitcher_pso = pitcher.at[0,"kR"]
+       pitcher_pbo = pitcher.at[0,"boR"]
+    else:
+       pitcher_p1b = pitcher.at[0,"1bL"]
+       pitcher_p2b = pitcher.at[0,"2bL"]
+       pitcher_p3b = pitcher.at[0,"3bL"]
+       pitcher_phr = pitcher.at[0,"hrL"]
+       pitcher_pbb = pitcher.at[0,"bbL"]
+       pitcher_pso = pitcher.at[0,"kL"]
+       pitcher_pbo = pitcher.at[0,"boL"]
+        
+    league_p1b = .152056268409
+    league_p2b = .045140889455
+    league_p3b = .004727358249
+    league_phr = .026802180461
+    league_pbb = .081558771793
+    league_pso = .198009085542
+    league_pbo = .491705446091
+
+    odds1b = ((batter_p1b / (1 - batter_p1b)) * (pitcher_p1b / (1 - pitcher_p1b)) / (league_p1b / (1 - league_p1b)))
+    odds2b = ((batter_p2b / (1 - batter_p2b)) * (pitcher_p2b / (1 - pitcher_p2b)) / (league_p2b / (1 - league_p2b)))
+    odds3b = ((batter_p3b / (1 - batter_p3b)) * (pitcher_p3b / (1 - pitcher_p3b)) / (league_p3b / (1 - league_p3b)))
+    oddshr = ((batter_phr / (1 - batter_phr)) * (pitcher_phr / (1 - pitcher_phr)) / (league_phr / (1 - league_phr)))
+    oddsbb = ((batter_pbb / (1 - batter_pbb)) * (pitcher_pbb / (1 - pitcher_pbb)) / (league_pbb / (1 - league_pbb)))
+    oddsso = ((batter_pso / (1 - batter_pso)) * (pitcher_pso / (1 - pitcher_pso)) / (league_pso / (1 - league_pso)))
+    oddsbo = ((batter_pbo / (1 - batter_pbo)) * (pitcher_pbo / (1 - pitcher_pbo)) / (league_pbo / (1 - league_pbo)))
+
+    p1b = odds1b / (odds1b +1)
+    p2b = odds2b / (odds2b +1)
+    p3b = odds3b / (odds3b +1)
+    phr = oddshr / (oddshr +1)
+    pbb = oddsbb / (oddsbb +1)
+    pso = oddsso / (oddsso +1)
+    pbo = oddsbo / (oddsbo +1)
+    total = p1b + p2b + p3b + phr + pbb + pso + pbo
+    
+    np1b = p1b / total
+    np2b = p2b / total
+    np3b = p3b / total
+    nphr = phr / total
+    npbb = pbb / total
+    npso = pso / total
+    npbo = pbo / total
+    
+    results = ['1b', '2b', '3b', 'hr', 'bb', 'so', 'bo']
+    probs = [np1b, np2b, np3b, nphr, npbb, npso, npbo]
+    
+    result = np.random.choice(results, 1, p=probs)
+    
+    return(result)
+  
+
 
 start = timeit.default_timer()
 
@@ -125,91 +201,108 @@ pitchers = pitchers.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single
 n = 9  #chunk row size
 list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]
 
-#
-# manipulate lineup scrape into each specific team's lineup
+
 
   
 away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)  
-
-
-def at_bat(pitcher, hitter):
-    
-    if pitcher.at[0,"Throws"] == "R":
-       batter_p1b = hitter.at[0,"1bR"]
-       batter_p2b = hitter.at[0,"2bR"]
-       batter_p3b = hitter.at[0,"3bR"]
-       batter_phr = hitter.at[0,"hrR"]
-       batter_pbb = hitter.at[0,"bbR"]
-       batter_pso = hitter.at[0,"kR"]
-       batter_pbo = hitter.at[0,"boR"]
-    else:
-       batter_p1b = hitter.at[0,"1bL"]
-       batter_p2b = hitter.at[0,"2bL"]
-       batter_p3b = hitter.at[0,"3bL"]
-       batter_phr = hitter.at[0,"hrL"]
-       batter_pbb = hitter.at[0,"bbL"]
-       batter_pso = hitter.at[0,"kL"]
-       batter_pbo = hitter.at[0,"boL"]
-        
-    if hitter.at[0,"Bats"] == "R" or (hitter.at[0,"Bats"] == "S" and pitcher.at[0,"Throws"] == "L"):
-       pitcher_p1b = pitcher.at[0,"1bR"]
-       pitcher_p2b = pitcher.at[0,"2bR"]
-       pitcher_p3b = pitcher.at[0,"3bR"]
-       pitcher_phr = pitcher.at[0,"hrR"]
-       pitcher_pbb = pitcher.at[0,"bbR"]
-       pitcher_pso = pitcher.at[0,"kR"]
-       pitcher_pbo = pitcher.at[0,"boR"]
-    else:
-       pitcher_p1b = pitcher.at[0,"1bL"]
-       pitcher_p2b = pitcher.at[0,"2bL"]
-       pitcher_p3b = pitcher.at[0,"3bL"]
-       pitcher_phr = pitcher.at[0,"hrL"]
-       pitcher_pbb = pitcher.at[0,"bbL"]
-       pitcher_pso = pitcher.at[0,"kL"]
-       pitcher_pbo = pitcher.at[0,"boL"]
-        
-    league_p1b = .152056268409
-    league_p2b = .045140889455
-    league_p3b = .004727358249
-    league_phr = .026802180461
-    league_pbb = .081558771793
-    league_pso = .198009085542
-    league_pbo = .491705446091
-
-    odds1b = ((batter_p1b / (1 - batter_p1b)) * (pitcher_p1b / (1 - pitcher_p1b)) / (league_p1b / (1 - league_p1b)))
-    odds2b = ((batter_p2b / (1 - batter_p2b)) * (pitcher_p2b / (1 - pitcher_p2b)) / (league_p2b / (1 - league_p2b)))
-    odds3b = ((batter_p3b / (1 - batter_p3b)) * (pitcher_p3b / (1 - pitcher_p3b)) / (league_p3b / (1 - league_p3b)))
-    oddshr = ((batter_phr / (1 - batter_phr)) * (pitcher_phr / (1 - pitcher_phr)) / (league_phr / (1 - league_phr)))
-    oddsbb = ((batter_pbb / (1 - batter_pbb)) * (pitcher_pbb / (1 - pitcher_pbb)) / (league_pbb / (1 - league_pbb)))
-    oddsso = ((batter_pso / (1 - batter_pso)) * (pitcher_pso / (1 - pitcher_pso)) / (league_pso / (1 - league_pso)))
-    oddsbo = ((batter_pbo / (1 - batter_pbo)) * (pitcher_pbo / (1 - pitcher_pbo)) / (league_pbo / (1 - league_pbo)))
-
-    p1b = odds1b / (odds1b +1)
-    p2b = odds2b / (odds2b +1)
-    p3b = odds3b / (odds3b +1)
-    phr = oddshr / (oddshr +1)
-    pbb = oddsbb / (oddsbb +1)
-    pso = oddsso / (oddsso +1)
-    pbo = oddsbo / (oddsbo +1)
-    total = p1b + p2b + p3b + phr + pbb + pso + pbo
-    
-    np1b = p1b / total
-    np2b = p2b / total
-    np3b = p3b / total
-    nphr = phr / total
-    npbb = pbb / total
-    npso = pso / total
-    npbo = pbo / total
-    
-    results = ['1b', '2b', '3b', 'hr', 'bb', 'so', 'bo']
-    probs = [np1b, np2b, np3b, nphr, npbb, npso, npbo]
-    
-    result = np.random.choice(results, 1, p=probs)
-    
-    return(result)
-  
 pa_result = at_bat(home_pitcher,pandas.DataFrame(away_lineup.iloc[0]).T.reset_index(drop = True))
 
+def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
+    inning = 1
+    half = 'top'
+    away_batter = 0
+    home_batter = 0
+    away_runs = 0
+    home_runs = 0
+    
+    while (inning < 9):
+      if (half = 'top'):
+        outs = 0
+        first_base = ''
+        second_base = ''
+        third_base = ''
+        while (outs > 3):
+          pa_result = at_bat(home_pitcher,pandas.DataFrame(away_lineup.iloc[away_batter]).T.reset_index(drop = True))
+          
+          if(pa_result == 'bo' | pa_result == 'so'):
+            outs = outs + 1
+            
+          if(pa_result == 'bb'):
+            if (third_base != '' && second_base != '' && first_base != ''):
+              away_runs = away_runs + 1
+              third_base = second_base
+              second_base = first_base
+              first_base = ''
+            elseif (third_base == '' && second_base != '' && first_base != ''):
+              third_base = second_base
+              second_base = first_base
+              first_base = ''
+            elseif (third_base == '' && second_base == '' && first_base != ''):
+              second_base = first_base
+              first_base = ''
+            elseif (third_base != '' && second_base == '' && first_base != ''):
+              second_base = first_base
+              first_base = ''
+            else:
+              third_base = third_base
+              second_base = second_base
+              first_base = ''
+            first_base = away_lineup.at[away_hitter,"Name"]
+            
+          if(pa_result == '1b'):
+            if (third_base != ''):
+              away_runs = away_runs + 1
+              third_base = ''
+            if (second_base != ''):
+              third_base = second_base
+              second_base = ''
+            if (first_base != ''):
+              second_base = first_base
+              first_base = ''
+            first_base = away_lineup.at[away_hitter,"Name"]
+            
+          if(pa_result == '2b'):
+            if (third_base != ''):
+              away_runs = away_runs + 1
+              third_base = ''
+            if (second_base != ''):
+              away_runs = away_runs + 1
+              second_base = ''
+            if (first_base != ''):
+              third_base = first_base
+              first_base = ''
+            second_base = away_lineup.at[away_hitter,"Name"] 
+                        
+          if(pa_result == '3b'):
+            if (third_base != ''):
+              away_runs = away_runs + 1
+              third_base = ''
+            if (second_base != ''):
+              away_runs = away_runs + 1
+              second_base = ''
+            if (first_base != ''):
+              away_runs = away_runs + 1
+              first_base = ''
+            third_base = away_lineup.at[away_hitter,"Name"]
+                  
+          if(pa_result == 'hr'):
+            if (third_base != ''):
+              away_runs = away_runs + 1
+              third_base = ''
+            if (second_base != ''):
+              away_runs = away_runs + 1
+              second_base = ''
+            if (first_base != ''):
+              away_runs = away_runs + 1
+              first_base = ''
+          
+          if (away_batter == 8):
+            away_batter = 0
+          else:
+            way_batter = away_batter + 1
+            
+        half = 'bottom'
+      if (half == 'bottom')
 
 stop = timeit.default_timer()
 
