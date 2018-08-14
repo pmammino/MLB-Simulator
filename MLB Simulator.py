@@ -134,39 +134,39 @@ away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)
 
 def at_bat(pitcher, hitter):
     
-    if pitcher[["Throws"]] == "R":
-       batter_p1b = hitter[["1bR"]]
-       batter_p2b = hitter[["2bR"]]
-       batter_p3b = hitter[["3bR"]]
-       batter_phr = hitter[["hrR"]]
-       batter_pbb = hitter[["bbR"]]
-       batter_pso = hitter[["kR"]]
-       batter_pbo = hitter[["boR"]]
+    if pitcher.at[0,"Throws"] == "R":
+       batter_p1b = hitter.at[0,"1bR"]
+       batter_p2b = hitter.at[0,"2bR"]
+       batter_p3b = hitter.at[0,"3bR"]
+       batter_phr = hitter.at[0,"hrR"]
+       batter_pbb = hitter.at[0,"bbR"]
+       batter_pso = hitter.at[0,"kR"]
+       batter_pbo = hitter.at[0,"boR"]
     else:
-       batter_p1b = hitter[["1bL"]]
-       batter_p2b = hitter[["2bL"]]
-       batter_p3b = hitter[["3bL"]]
-       batter_phr = hitter[["hrL"]]
-       batter_pbb = hitter[["bbL"]]
-       batter_pso = hitter[["kL"]]
-       batter_pbo = hitter[["boL"]]
+       batter_p1b = hitter.at[0,"1bL"]
+       batter_p2b = hitter.at[0,"2bL"]
+       batter_p3b = hitter.at[0,"3bL"]
+       batter_phr = hitter.at[0,"hrL"]
+       batter_pbb = hitter.at[0,"bbL"]
+       batter_pso = hitter.at[0,"kL"]
+       batter_pbo = hitter.at[0,"boL"]
         
-    if hitter[["Bats"]] == "R" or (hitter[["Bats"]] == "S" and pitcher[["Throws"]] == "L"):
-       pitcher_p1b = pitcher[["1bR"]]
-       pitcher_p2b = pitcher[["2bR"]]
-       pitcher_p3b = pitcher[["3bR"]]
-       pitcher_phr = pitcher[["hrR"]]
-       pitcher_pbb = pitcher[["bbR"]]
-       pitcher_pso = pitcher[["kR"]]
-       batter_pbo = pitcher[["boR"]]
+    if hitter.at[0,"Bats"] == "R" or (hitter.at[0,"Bats"] == "S" and pitcher.at[0,"Throws"] == "L"):
+       pitcher_p1b = pitcher.at[0,"1bR"]
+       pitcher_p2b = pitcher.at[0,"2bR"]
+       pitcher_p3b = pitcher.at[0,"3bR"]
+       pitcher_phr = pitcher.at[0,"hrR"]
+       pitcher_pbb = pitcher.at[0,"bbR"]
+       pitcher_pso = pitcher.at[0,"kR"]
+       pitcher_pbo = pitcher.at[0,"boR"]
     else:
-       pitcher_p1b = pitcher[["1bL"]]
-       pitcher_p2b = pitcher[["2bL"]]
-       pitcher_p3b = pitcher[["3bL"]]
-       pitcher_phr = pitcher[["hrL"]]
-       pitcher_pbb = pitcher[["bbL"]]
-       pitcher_pso = pitcher[["kL"]]
-       pitcher_pbo = pitcher[["boL"]]
+       pitcher_p1b = pitcher.at[0,"1bL"]
+       pitcher_p2b = pitcher.at[0,"2bL"]
+       pitcher_p3b = pitcher.at[0,"3bL"]
+       pitcher_phr = pitcher.at[0,"hrL"]
+       pitcher_pbb = pitcher.at[0,"bbL"]
+       pitcher_pso = pitcher.at[0,"kL"]
+       pitcher_pbo = pitcher.at[0,"boL"]
 
     odds1b = ((batter_p1b / (1 - batter_p1b)) * (pitcher_p1b / (1 - pitcher_p1b)) / (league_p1b / (1 - league_p1b)))
     odds2b = ((batter_p2b / (1 - batter_p2b)) * (pitcher_p2b / (1 - pitcher_p2b)) / (league_p2b / (1 - league_p2b)))
