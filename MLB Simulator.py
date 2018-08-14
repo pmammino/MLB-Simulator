@@ -208,7 +208,7 @@ def at_bat(pitcher, hitter):
     
     return(result)
   
-pa_result = at_bat(home_pitcher,away_lineup.iloc[0])
+pa_result = at_bat(home_pitcher,pandas.Dataframe(away_lineup.iloc[0]).T.reset_index(drop = True))
 
 
 stop = timeit.default_timer()
