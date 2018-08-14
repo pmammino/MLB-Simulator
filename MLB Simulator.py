@@ -2,6 +2,7 @@ import bs4
 import requests
 import pandas
 import timeit
+import numpy as np
 
 
 
@@ -133,27 +134,40 @@ away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)
 
 def at_bat(pitcher, hitter):
     
-    if away_pitcher["Throws"] == "R":
-       batter_p1b = home_lineup["1bR"]
-       batter_p2b = home_lineup["2bR"]
-       batter_p3b = home_lineup["3bR"]
-       batter_phr = home_lineup["hrR"]
-       batter_pbb = home_lineup["bbR"]
-       batter_pso = home_lineup["kR"]
-       batter_pbo = home_lineup["boR"]
-    elif away_pitcher["Throws"] == "L":
-        batter_p1b = home_lineup["1bL"]
-        batter_p2b = home_lineup["2bL"]
-        batter_p3b = home_lineup["3bL"]
-        batter_phr = home_lineup["hrL"]
-        batter_pbb = home_lineup["bbL"]
-        batter_pso = home_lineup["kL"]
-        batter_pbo = home_lineup["boL"]
-    
-    return [batter_p1b, batter_p2b, batter_p3b, batter_phr, batter_pbb, batter_pso, batter_pbo]
+    if pitcher[["Throws"]] == "R":
+       batter_p1b = hitter[["1bR"]]
+       batter_p2b = hitter[["2bR"]]
+       batter_p3b = hitter[["3bR"]]
+       batter_phr = hitter[["hrR"]]
+       batter_pbb = hitter[["bbR"]]
+       batter_pso = hitter[["kR"]]
+       batter_pbo = hitter[["boR"]]
+    else:
+       batter_p1b = hitter[["1bL"]]
+       batter_p2b = hitter[["2bL"]]
+       batter_p3b = hitter[["3bL"]]
+       batter_phr = hitter[["hrL"]]
+       batter_pbb = hitter[["bbL"]]
+       batter_pso = hitter[["kL"]]
+       batter_pbo = hitter[["boL"]]
+        
+    if hitter[["Bats"]] == "R" or (hitter[["Bats"]] == "S" and pitcher[["Throws"]] == "L"):
+       pitcher_p1b = pitcher[["1bR"]]
+       pitcher_p2b = pitcher[["2bR"]]
+       pitcher_p3b = pitcher[["3bR"]]
+       pitcher_phr = pitcher[["hrR"]]
+       pitcher_pbb = pitcher[["bbR"]]
+       pitcher_pso = pitcher[["kR"]]
+       batter_pbo = pitcher[["boR"]]
+    else:
+       pitcher_p1b = pitcher[["1bL"]]
+       pitcher_p2b = pitcher[["2bL"]]
+       pitcher_p3b = pitcher[["3bL"]]
+       pitcher_phr = pitcher[["hrL"]]
+       pitcher_pbb = pitcher[["bbL"]]
+       pitcher_pso = pitcher[["kL"]]
+       pitcher_pbo = pitcher[["boL"]]
 
-def oddsCalc(batter, pitcher, league):
-    
     odds1b = ((batter_p1b / (1 - batter_p1b)) * (pitcher_p1b / (1 - pitcher_p1b)) / (league_p1b / (1 - league_p1b)))
     odds2b = ((batter_p2b / (1 - batter_p2b)) * (pitcher_p2b / (1 - pitcher_p2b)) / (league_p2b / (1 - league_p2b)))
     odds3b = ((batter_p3b / (1 - batter_p3b)) * (pitcher_p3b / (1 - pitcher_p3b)) / (league_p3b / (1 - league_p3b)))
@@ -179,13 +193,14 @@ def oddsCalc(batter, pitcher, league):
     npso = pso / total
     npbo = pbo / total
     
-    return [np1b, np2b, np3b, nphr, npbb, npso, npbo]
-
-
-
-
-
-
+    results = ['1b', '2b', '3b', 'hr', 'bb', 'so', 'bo']
+    probs = [np1b, np2b, np3b, nphr, npbb, npso, npbo]
+    
+    result = np.random.choice(results, 1, p=probs)
+    
+    return(result)
+  
+pa_result = at_bat(away_lineup.iloc[0], home_pitcher)
 
 
 stop = timeit.default_timer()
