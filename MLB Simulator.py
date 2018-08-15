@@ -209,8 +209,8 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     home_batter = 0
     away_runs = 0
     home_runs = 0
-    away_box_score = pandas.DataFrame(columns=['Name' : away_lineup['name'].tolist(),'PA' : 0,'H': 0,'BB' : 0,'Single' : 0,'Double' : 0,'Triple' : 0, 'HR' : 0, 'R':0, 'RBI' : 0)
-    home_box_score = pandas.DataFrame(columns=['Name' : home_lineup['name'].tolist(),'PA' : 0,'H' : 0,'BB' : 0,'Single' : 0,'Double' : 0,'Triple' : 0, 'HR' : 0, 'R' : 0, 'RBI' : 0)
+    away_box_score = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]})
+    home_box_score = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]})
     
     while (inning < 10):
       if (half == 'top'):
