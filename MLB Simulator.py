@@ -201,11 +201,7 @@ pitchers = pitchers.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single
 n = 9  #chunk row size
 list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]
 
-
-
-  
-away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(2)  
-
+###Function To Simulate One Game
 def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     inning = 1
     half = 'top'
@@ -213,6 +209,8 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     home_batter = 0
     away_runs = 0
     home_runs = 0
+    away_box_score = pandas.DataFrame(columns=['Name' : away_lineup['name'].tolist(),'PA' : 0,'H': 0,'BB' : 0,'Single' : 0,'Double' : 0,'Triple' : 0, 'HR' : 0, 'R':0, 'RBI' : 0)
+    home_box_score = pandas.DataFrame(columns=['Name' : home_lineup['name'].tolist(),'PA' : 0,'H' : 0,'BB' : 0,'Single' : 0,'Double' : 0,'Triple' : 0, 'HR' : 0, 'R' : 0, 'RBI' : 0)
     
     while (inning < 10):
       if (half == 'top'):
@@ -222,12 +220,16 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
         third_base = ''
         while (outs < 3):
           pa_result = at_bat(home_pitcher,pandas.DataFrame(away_lineup.iloc[away_batter]).T.reset_index(drop = True))
+          
           if(pa_result == 'bo' or pa_result == 'so'):
             outs = outs + 1
+            away_box_score['PA'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['PA'] + 1, away_box_score['PA'])
             
           if(pa_result == 'bb'):
+            runs_before = away_runs                                  
             if (third_base != '' and second_base != '' and first_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==third_base, away_box_score['R'] + 1, away_box_score['R'])
               third_base = second_base
               second_base = first_base
               first_base = ''
@@ -246,10 +248,16 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
               second_base = second_base
               first_base = ''
             first_base = away_lineup.at[away_batter,"name"]
-            
+            runs_diff = away_runs - runs_before
+            away_box_score['PA'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['PA'] + 1, away_box_score['PA'])
+            away_box_score['BB'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['BB'] + 1, away_box_score['BB'])
+            away_box_score['RBI'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['RBI'] + runs_diff, away_box_score['RBI'])
+                                               
           if(pa_result == '1b'):
+            runs_before = away_runs
             if (third_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==third_base, away_box_score['R'] + 1, away_box_score['R'])
               third_base = ''
             if (second_base != ''):
               third_base = second_base
@@ -258,41 +266,75 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
               second_base = first_base
               first_base = ''
             first_base = away_lineup.at[away_batter,"name"]
-            
+            runs_diff = away_runs - runs_before
+            away_box_score['PA'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['PA'] + 1, away_box_score['PA'])
+            away_box_score['H'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['H'] + 1, away_box_score['H'])
+            away_box_score['Single'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['Single'] + 1, away_box_score['Single'])
+            away_box_score['RBI'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['RBI'] + runs_diff, away_box_score['RBI'])
+                          
           if(pa_result == '2b'):
+            runs_before = away_runs
             if (third_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==third_base, away_box_score['R'] + 1, away_box_score['R'])
               third_base = ''
             if (second_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==second_base, away_box_score['R'] + 1, away_box_score['R'])
               second_base = ''
             if (first_base != ''):
               third_base = first_base
               first_base = ''
-            second_base = away_lineup.at[away_batter,"name"] 
+            second_base = away_lineup.at[away_batter,"name"]
+            runs_diff = away_runs - runs_before
+            away_box_score['PA'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['PA'] + 1, away_box_score['PA'])
+            away_box_score['H'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['H'] + 1, away_box_score['H'])
+            away_box_score['Double'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['Double'] + 1, away_box_score['Double'])
+            away_box_score['RBI'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['RBI'] + runs_diff, away_box_score['RBI'])                                            
                         
           if(pa_result == '3b'):
+            runs_before = away_runs
             if (third_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==third_base, away_box_score['R'] + 1, away_box_score['R'])                                               
               third_base = ''
             if (second_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==second_base, away_box_score['R'] + 1, away_box_score['R'])                                               
               second_base = ''
             if (first_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==first_base, away_box_score['R'] + 1, away_box_score['R'])                                                
               first_base = ''
             third_base = away_lineup.at[away_batter,"name"]
+            runs_diff = away_runs - runs_before
+            away_box_score['PA'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['PA'] + 1, away_box_score['PA'])
+            away_box_score['H'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['H'] + 1, away_box_score['H'])
+            away_box_score['Triple'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['Triple'] + 1, away_box_score['Triple'])
+            away_box_score['RBI'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['RBI'] + runs_diff, away_box_score['RBI'])                                                                                      
                   
           if(pa_result == 'hr'):
+            runs_before = away_runs
             if (third_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==third_base, away_box_score['R'] + 1, away_box_score['R'])                                               
               third_base = ''
             if (second_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==second_base, away_box_score['R'] + 1, away_box_score['R'])                                               
               second_base = ''
             if (first_base != ''):
               away_runs = away_runs + 1
+              away_box_score['R'] = np.where(away_box_score['Name']==first_base, away_box_score['R'] + 1, away_box_score['R'])                                                
               first_base = ''
+            away_runs = away_runs + 1
+            away_box_score['R'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['R'] + 1, away_box_score['R'])
+            runs_diff = away_runs - runs_before
+            away_box_score['PA'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['PA'] + 1, away_box_score['PA'])
+            away_box_score['H'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['H'] + 1, away_box_score['H'])
+            away_box_score['HR'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['Triple'] + 1, away_box_score['Triple'])
+            away_box_score['RBI'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['RBI'] + runs_diff, away_box_score['RBI'])                                                                                      
+                                                  
           
           if (away_batter == 8):
             away_batter = 0
@@ -313,10 +355,13 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
           
           if(pa_result == 'bo' or pa_result == 'so'):
             outs = outs + 1
-            
+            home_box_score['PA'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['PA'] + 1, home_box_score['PA'])
+                                               
           if(pa_result == 'bb'):
+            runs_before = home_runs                                  
             if (third_base != '' and second_base != '' and first_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==third_base, home_box_score['R'] + 1, home_box_score['R'])
               third_base = second_base
               second_base = first_base
               first_base = ''
@@ -334,11 +379,17 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
               third_base = third_base
               second_base = second_base
               first_base = ''
-            first_base = away_lineup.at[home_batter,"name"]
-            
+            first_base = home_lineup.at[home_batter,"name"]
+            runs_diff = home_runs - runs_before
+            home_box_score['PA'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['PA'] + 1, home_box_score['PA'])
+            home_box_score['BB'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['BB'] + 1, home_box_score['BB'])
+            home_box_score['RBI'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['RBI'] + runs_diff, home_box_score['RBI'])
+                                               
           if(pa_result == '1b'):
+            runs_before = home_runs
             if (third_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==third_base, home_box_score['R'] + 1, home_box_score['R'])
               third_base = ''
             if (second_base != ''):
               third_base = second_base
@@ -347,41 +398,74 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
               second_base = first_base
               first_base = ''
             first_base = home_lineup.at[home_batter,"name"]
-            
+            runs_diff = home_runs - runs_before
+            home_box_score['PA'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['PA'] + 1, home_box_score['PA'])
+            home_box_score['H'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['H'] + 1, home_box_score['H'])
+            home_box_score['Single'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['Single'] + 1, home_box_score['Single'])
+            home_box_score['RBI'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['RBI'] + runs_diff, home_box_score['RBI'])
+                          
           if(pa_result == '2b'):
+            runs_before = home_runs
             if (third_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==third_base, home_box_score['R'] + 1, home_box_score['R'])
               third_base = ''
             if (second_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==second_base, home_box_score['R'] + 1, home_box_score['R'])
               second_base = ''
             if (first_base != ''):
               third_base = first_base
               first_base = ''
-            second_base = home_lineup.at[home_batter,"name"] 
+            second_base = home_lineup.at[home_batter,"name"]
+            runs_diff = home_runs - runs_before
+            home_box_score['PA'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['PA'] + 1, home_box_score['PA'])
+            home_box_score['H'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['H'] + 1, home_box_score['H'])
+            home_box_score['Double'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['Double'] + 1, home_box_score['Double'])
+            home_box_score['RBI'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['RBI'] + runs_diff, home_box_score['RBI'])                                            
                         
           if(pa_result == '3b'):
+            runs_before = home_runs
             if (third_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==third_base, home_box_score['R'] + 1, home_box_score['R'])                                               
               third_base = ''
             if (second_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==second_base, home_box_score['R'] + 1, home_box_score['R'])                                               
               second_base = ''
             if (first_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==first_base, home_box_score['R'] + 1, home_box_score['R'])                                                
               first_base = ''
             third_base = home_lineup.at[home_batter,"name"]
+            runs_diff = home_runs - runs_before
+            home_box_score['PA'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['PA'] + 1, home_box_score['PA'])
+            home_box_score['H'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['H'] + 1, home_box_score['H'])
+            home_box_score['Triple'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['Triple'] + 1, home_box_score['Triple'])
+            home_box_score['RBI'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['RBI'] + runs_diff, home_box_score['RBI'])                                                                                      
                   
           if(pa_result == 'hr'):
+            runs_before = home_runs
             if (third_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==third_base, home_box_score['R'] + 1, home_box_score['R'])                                               
               third_base = ''
             if (second_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==second_base, home_box_score['R'] + 1, home_box_score['R'])                                               
               second_base = ''
             if (first_base != ''):
               home_runs = home_runs + 1
+              home_box_score['R'] = np.where(home_box_score['Name']==first_base, home_box_score['R'] + 1, home_box_score['R'])                                                
               first_base = ''
+            home_runs = home_runs + 1
+            home_box_score['R'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['R'] + 1, home_box_score['R'])
+            runs_diff = home_runs - runs_before
+            home_box_score['PA'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['PA'] + 1, home_box_score['PA'])
+            home_box_score['H'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['H'] + 1, home_box_score['H'])
+            home_box_score['HR'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['Triple'] + 1, home_box_score['Triple'])
+            home_box_score['RBI'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['RBI'] + runs_diff, home_box_score['RBI'])       
           
           if (home_batter == 8):
             home_batter = 0
@@ -390,9 +474,11 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
         half = 'top'
         inning = inning + 1
     
-    return(away_runs, home_runs)    
-        
-bos_runs, phi_runs = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)                   
+    return(away_box_score, home_Box_score)    
+
+                                               
+away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)
+away_box, home_box = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)                   
 
 stop = timeit.default_timer()
 
