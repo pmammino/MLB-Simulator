@@ -486,8 +486,10 @@ for i in range(10):
   away_box_score_total = away_box_score_total + away_box
   home_box_score_total = home_box_score_total + home_box
 
+del away_box_score_total['Name']
 away_box_score_total = away_box_score_total/10
 away_box_score_total['Name'] = away_lineup['name'].tolist()
+del home_box_score_total['Name']
 home_box_score_total = home_box_score_total/10
 home_box_score_total['Name'] = home_lineup['name'].tolist()
 
