@@ -476,22 +476,345 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     
     return(away_box_score, home_Box_score)    
 
-                                               
-away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)
-away_box_score_total = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
-home_box_score_total = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+if len(teams) >= 2:                                               
+  away_lineup_1, home_lineup_1, away_pitcher_1, home_pitcher_1 = set_lineups(0)
+  away_box_score_total_1 = pandas.DataFrame({'Name' : away_lineup_1['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_1 = pandas.DataFrame({'Name' : home_lineup_1['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
 
-for i in range(10):
-  away_box, home_box = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)
-  away_box_score_total = away_box_score_total + away_box
-  home_box_score_total = home_box_score_total + home_box
+  for i in range(1000):
+    away_box_1, home_box_1 = game_sim(away_lineup_1, home_lineup_1, away_pitcher_1, home_pitcher_1)
+    away_box_score_total_1 = away_box_score_total_1 + away_box_1
+    home_box_score_total_1 = home_box_score_total_1 + home_box_1
 
-del away_box_score_total['Name']
-away_box_score_total = away_box_score_total/10
-away_box_score_total['Name'] = away_lineup['name'].tolist()
-del home_box_score_total['Name']
-home_box_score_total = home_box_score_total/10
-home_box_score_total['Name'] = home_lineup['name'].tolist()
+  del away_box_score_total_1['Name']
+  away_box_score_total_1 = away_box_score_total_1/1000
+  away_box_score_total_1['Name'] = away_lineup_1['name'].tolist()
+  del home_box_score_total_1['Name']
+  home_box_score_total_1 = home_box_score_total_1/1000
+  home_box_score_total_1['Name'] = home_lineup_1['name'].tolist()
+  
+if len(teams) >= 4:                                               
+  away_lineup_2, home_lineup_2, away_pitcher_2, home_pitcher_2 = set_lineups(2)
+  away_box_score_total_2 = pandas.DataFrame({'Name' : away_lineup_2['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_2 = pandas.DataFrame({'Name' : home_lineup_2['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_2, home_box_2 = game_sim(away_lineup_2, home_lineup_2, away_pitcher_2, home_pitcher_2)
+    away_box_score_total_2 = away_box_score_total_2 + away_box_2
+    home_box_score_total_2 = home_box_score_total_2 + home_box_2
+
+  del away_box_score_total_2['Name']
+  away_box_score_total_2 = away_box_score_total_2/1000
+  away_box_score_total_2['Name'] = away_lineup_2['name'].tolist()
+  del home_box_score_total_2['Name']
+  home_box_score_total_2 = home_box_score_total_2/1000
+  home_box_score_total_2['Name'] = home_lineup_2['name'].tolist()
+
+if len(teams) >= 6:                                               
+  away_lineup_3, home_lineup_3, away_pitcher_3, home_pitcher_3 = set_lineups(4)
+  away_box_score_total_3 = pandas.DataFrame({'Name' : away_lineup_3['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_3 = pandas.DataFrame({'Name' : home_lineup_3['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_3, home_box_3 = game_sim(away_lineup_3, home_lineup_3, away_pitcher_3, home_pitcher_3)
+    away_box_score_total_3 = away_box_score_total_3 + away_box_3
+    home_box_score_total_3 = home_box_score_total_3 + home_box_3
+
+  del away_box_score_total_3['Name']
+  away_box_score_total_3 = away_box_score_total_3/1000
+  away_box_score_total_3['Name'] = away_lineup_3['name'].tolist()
+  del home_box_score_total_3['Name']
+  home_box_score_total_3 = home_box_score_total_3/1000
+  home_box_score_total_3['Name'] = home_lineup_3['name'].tolist()
+
+if len(teams) >= 8:                                               
+  away_lineup_4, home_lineup_4, away_pitcher_4, home_pitcher_4 = set_lineups(6)
+  away_box_score_total_4 = pandas.DataFrame({'Name' : away_lineup_4['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_4 = pandas.DataFrame({'Name' : home_lineup_4['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_4, home_box_4 = game_sim(away_lineup_4, home_lineup_4, away_pitcher_4, home_pitcher_4)
+    away_box_score_total_4 = away_box_score_total_4 + away_box_4
+    home_box_score_total_4 = home_box_score_total_4 + home_box_4
+
+  del away_box_score_total_4['Name']
+  away_box_score_total_4 = away_box_score_total_4/1000
+  away_box_score_total_4['Name'] = away_lineup_4['name'].tolist()
+  del home_box_score_total_4['Name']
+  home_box_score_total_4 = home_box_score_total_4/1000
+  home_box_score_total_4['Name'] = home_lineup_4['name'].tolist()
+
+if len(teams) >= 10:                                               
+  away_lineup_5, home_lineup_5, away_pitcher_5, home_pitcher_5 = set_lineups(8)
+  away_box_score_total_5 = pandas.DataFrame({'Name' : away_lineup_5['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_5 = pandas.DataFrame({'Name' : home_lineup_5['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_5, home_box_5 = game_sim(away_lineup_5, home_lineup_5, away_pitcher_5, home_pitcher_5)
+    away_box_score_total_5 = away_box_score_total_5 + away_box_5
+    home_box_score_total_5 = home_box_score_total_5 + home_box_5
+
+  del away_box_score_total_5['Name']
+  away_box_score_total_5 = away_box_score_total_5/1000
+  away_box_score_total_5['Name'] = away_lineup_5['name'].tolist()
+  del home_box_score_total_5['Name']
+  home_box_score_total_5 = home_box_score_total_5/1000
+  home_box_score_total_5['Name'] = home_lineup_5['name'].tolist()
+
+if len(teams) >= 12:                                               
+  away_lineup_6, home_lineup_6, away_pitcher_6, home_pitcher_6 = set_lineups(10)
+  away_box_score_total_6 = pandas.DataFrame({'Name' : away_lineup_6['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_6 = pandas.DataFrame({'Name' : home_lineup_6['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_6, home_box_6 = game_sim(away_lineup_6, home_lineup_6, away_pitcher_6, home_pitcher_6)
+    away_box_score_total_6 = away_box_score_total_6 + away_box_6
+    home_box_score_total_6 = home_box_score_total_6 + home_box_6
+
+  del away_box_score_total_6['Name']
+  away_box_score_total_6 = away_box_score_total_6/1000
+  away_box_score_total_6['Name'] = away_lineup_6['name'].tolist()
+  del home_box_score_total_6['Name']
+  home_box_score_total_6 = home_box_score_total_6/1000
+  home_box_score_total_6['Name'] = home_lineup_6['name'].tolist()
+
+if len(teams) >= 14:                                               
+  away_lineup_7, home_lineup_7, away_pitcher_7, home_pitcher_7 = set_lineups(12)
+  away_box_score_total_7 = pandas.DataFrame({'Name' : away_lineup_7['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_7 = pandas.DataFrame({'Name' : home_lineup_7['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_7, home_box_7 = game_sim(away_lineup_7, home_lineup_7, away_pitcher_7, home_pitcher_7)
+    away_box_score_total_7 = away_box_score_total_7 + away_box_7
+    home_box_score_total_7 = home_box_score_total_7 + home_box_7
+
+  del away_box_score_total_7['Name']
+  away_box_score_total_7 = away_box_score_total_7/1000
+  away_box_score_total_7['Name'] = away_lineup_7['name'].tolist()
+  del home_box_score_total_7['Name']
+  home_box_score_total_7 = home_box_score_total_7/1000
+  home_box_score_total_7['Name'] = home_lineup_7['name'].tolist()
+
+if len(teams) >= 16:                                               
+  away_lineup_8, home_lineup_8, away_pitcher_8, home_pitcher_8 = set_lineups(14)
+  away_box_score_total_8 = pandas.DataFrame({'Name' : away_lineup_8['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_8 = pandas.DataFrame({'Name' : home_lineup_8['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_8, home_box_8 = game_sim(away_lineup_8, home_lineup_8, away_pitcher_8, home_pitcher_8)
+    away_box_score_total_8 = away_box_score_total_8 + away_box_8
+    home_box_score_total_8 = home_box_score_total_8 + home_box_8
+
+  del away_box_score_total_8['Name']
+  away_box_score_total_8 = away_box_score_total_8/1000
+  away_box_score_total_8['Name'] = away_lineup_8['name'].tolist()
+  del home_box_score_total_8['Name']
+  home_box_score_total_8 = home_box_score_total_8/1000
+  home_box_score_total_8['Name'] = home_lineup_8['name'].tolist()
+
+if len(teams) >= 18:                                               
+  away_lineup_9, home_lineup_9, away_pitcher_9, home_pitcher_9 = set_lineups(16)
+  away_box_score_total_9 = pandas.DataFrame({'Name' : away_lineup_9['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_9 = pandas.DataFrame({'Name' : home_lineup_9['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_9, home_box_9 = game_sim(away_lineup_9, home_lineup_9, away_pitcher_9, home_pitcher_9)
+    away_box_score_total_9 = away_box_score_total_9 + away_box_9
+    home_box_score_total_9 = home_box_score_total_9 + home_box_9
+
+  del away_box_score_total_9['Name']
+  away_box_score_total_9 = away_box_score_total_9/1000
+  away_box_score_total_9['Name'] = away_lineup_9['name'].tolist()
+  del home_box_score_total_9['Name']
+  home_box_score_total_9 = home_box_score_total_9/1000
+  home_box_score_total_9['Name'] = home_lineup_9['name'].tolist()
+
+if len(teams) >= 20:                                               
+  away_lineup_10, home_lineup_10, away_pitcher_10, home_pitcher_10 = set_lineups(18)
+  away_box_score_total_10 = pandas.DataFrame({'Name' : away_lineup_10['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_10 = pandas.DataFrame({'Name' : home_lineup_10['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_10, home_box_10 = game_sim(away_lineup_10, home_lineup_10, away_pitcher_10, home_pitcher_10)
+    away_box_score_total_10 = away_box_score_total_10 + away_box_10
+    home_box_score_total_10 = home_box_score_total_10 + home_box_10
+
+  del away_box_score_total_10['Name']
+  away_box_score_total_10 = away_box_score_total_10/1000
+  away_box_score_total_10['Name'] = away_lineup_10['name'].tolist()
+  del home_box_score_total_10['Name']
+  home_box_score_total_10 = home_box_score_total_10/1000
+  home_box_score_total_10['Name'] = home_lineup_10['name'].tolist()
+
+if len(teams) >= 22:                                               
+  away_lineup_11, home_lineup_11, away_pitcher_11, home_pitcher_11 = set_lineups(20)
+  away_box_score_total_11 = pandas.DataFrame({'Name' : away_lineup_11['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_11 = pandas.DataFrame({'Name' : home_lineup_11['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_11, home_box_11 = game_sim(away_lineup_11, home_lineup_11, away_pitcher_11, home_pitcher_11)
+    away_box_score_total_11 = away_box_score_total_11 + away_box_11
+    home_box_score_total_11 = home_box_score_total_11 + home_box_11
+
+  del away_box_score_total_11['Name']
+  away_box_score_total_11 = away_box_score_total_11/1000
+  away_box_score_total_11['Name'] = away_lineup_11['name'].tolist()
+  del home_box_score_total_11['Name']
+  home_box_score_total_11 = home_box_score_total_11/1000
+  home_box_score_total_11['Name'] = home_lineup_11['name'].tolist()
+
+if len(teams) >= 24:                                               
+  away_lineup_12, home_lineup_12, away_pitcher_12, home_pitcher_12 = set_lineups(22)
+  away_box_score_total_12 = pandas.DataFrame({'Name' : away_lineup_12['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_12 = pandas.DataFrame({'Name' : home_lineup_12['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_12, home_box_12 = game_sim(away_lineup_12, home_lineup_12, away_pitcher_12, home_pitcher_12)
+    away_box_score_total_12 = away_box_score_total_12 + away_box_12
+    home_box_score_total_12 = home_box_score_total_12 + home_box_12
+
+  del away_box_score_total_12['Name']
+  away_box_score_total_12 = away_box_score_total_12/1000
+  away_box_score_total_12['Name'] = away_lineup_12['name'].tolist()
+  del home_box_score_total_12['Name']
+  home_box_score_total_12 = home_box_score_total_12/1000
+  home_box_score_total_12['Name'] = home_lineup_12['name'].tolist()
+
+if len(teams) >= 26:                                               
+  away_lineup_13, home_lineup_13, away_pitcher_13, home_pitcher_13 = set_lineups(24)
+  away_box_score_total_13 = pandas.DataFrame({'Name' : away_lineup_13['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_13 = pandas.DataFrame({'Name' : home_lineup_13['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_13, home_box_13 = game_sim(away_lineup_13, home_lineup_13, away_pitcher_13, home_pitcher_13)
+    away_box_score_total_13 = away_box_score_total_13 + away_box_13
+    home_box_score_total_13 = home_box_score_total_13 + home_box_13
+
+  del away_box_score_total_13['Name']
+  away_box_score_total_13 = away_box_score_total_13/1000
+  away_box_score_total_13['Name'] = away_lineup_13['name'].tolist()
+  del home_box_score_total_13['Name']
+  home_box_score_total_13 = home_box_score_total_13/1000
+  home_box_score_total_13['Name'] = home_lineup_13['name'].tolist()
+
+if len(teams) >= 28:                                               
+  away_lineup_14, home_lineup_14, away_pitcher_14, home_pitcher_14 = set_lineups(26)
+  away_box_score_total_14 = pandas.DataFrame({'Name' : away_lineup_14['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_14 = pandas.DataFrame({'Name' : home_lineup_14['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_14, home_box_14 = game_sim(away_lineup_14, home_lineup_14, away_pitcher_14, home_pitcher_14)
+    away_box_score_total_14 = away_box_score_total_14 + away_box_14
+    home_box_score_total_14 = home_box_score_total_14 + home_box_14
+
+  del away_box_score_total_14['Name']
+  away_box_score_total_14 = away_box_score_total_14/1000
+  away_box_score_total_14['Name'] = away_lineup_14['name'].tolist()
+  del home_box_score_total_14['Name']
+  home_box_score_total_14 = home_box_score_total_14/1000
+  home_box_score_total_14['Name'] = home_lineup_14['name'].tolist()
+
+if len(teams) >= 30:                                               
+  away_lineup_15, home_lineup_15, away_pitcher_15, home_pitcher_15 = set_lineups(28)
+  away_box_score_total_15 = pandas.DataFrame({'Name' : away_lineup_15['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_15 = pandas.DataFrame({'Name' : home_lineup_15['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_15, home_box_15 = game_sim(away_lineup_15, home_lineup_15, away_pitcher_15, home_pitcher_15)
+    away_box_score_total_15 = away_box_score_total_15 + away_box_15
+    home_box_score_total_15 = home_box_score_total_15 + home_box_15
+
+  del away_box_score_total_15['Name']
+  away_box_score_total_15 = away_box_score_total_15/1000
+  away_box_score_total_15['Name'] = away_lineup_15['name'].tolist()
+  del home_box_score_total_15['Name']
+  home_box_score_total_15 = home_box_score_total_15/1000
+  home_box_score_total_15['Name'] = home_lineup_15['name'].tolist()
+
+if len(teams) >= 32:                                               
+  away_lineup_16, home_lineup_16, away_pitcher_16, home_pitcher_16 = set_lineups(30)
+  away_box_score_total_16 = pandas.DataFrame({'Name' : away_lineup_16['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_16 = pandas.DataFrame({'Name' : home_lineup_16['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_16, home_box_16 = game_sim(away_lineup_16, home_lineup_16, away_pitcher_16, home_pitcher_16)
+    away_box_score_total_16 = away_box_score_total_16 + away_box_16
+    home_box_score_total_16 = home_box_score_total_16 + home_box_16
+
+  del away_box_score_total_16['Name']
+  away_box_score_total_16 = away_box_score_total_16/1000
+  away_box_score_total_16['Name'] = away_lineup_16['name'].tolist()
+  del home_box_score_total_16['Name']
+  home_box_score_total_16 = home_box_score_total_16/1000
+  home_box_score_total_16['Name'] = home_lineup_16['name'].tolist()
+
+if len(teams) >= 34:                                               
+  away_lineup_17, home_lineup_17, away_pitcher_17, home_pitcher_17 = set_lineups(32)
+  away_box_score_total_17 = pandas.DataFrame({'Name' : away_lineup_17['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_17 = pandas.DataFrame({'Name' : home_lineup_17['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_17, home_box_17 = game_sim(away_lineup_17, home_lineup_17, away_pitcher_17, home_pitcher_17)
+    away_box_score_total_17 = away_box_score_total_17 + away_box_17
+    home_box_score_total_17 = home_box_score_total_17 + home_box_17
+
+  del away_box_score_total_17['Name']
+  away_box_score_total_17 = away_box_score_total_17/1000
+  away_box_score_total_17['Name'] = away_lineup_17['name'].tolist()
+  del home_box_score_total_17['Name']
+  home_box_score_total_17 = home_box_score_total_17/1000
+  home_box_score_total_17['Name'] = home_lineup_17['name'].tolist()
+
+if len(teams) >= 36:                                               
+  away_lineup_18, home_lineup_18, away_pitcher_18, home_pitcher_18 = set_lineups(34)
+  away_box_score_total_18 = pandas.DataFrame({'Name' : away_lineup_18['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_18 = pandas.DataFrame({'Name' : home_lineup_18['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_18, home_box_18 = game_sim(away_lineup_18, home_lineup_18, away_pitcher_18, home_pitcher_18)
+    away_box_score_total_18 = away_box_score_total_18 + away_box_18
+    home_box_score_total_18 = home_box_score_total_18 + home_box_18
+
+  del away_box_score_total_18['Name']
+  away_box_score_total_18 = away_box_score_total_18/1000
+  away_box_score_total_18['Name'] = away_lineup_18['name'].tolist()
+  del home_box_score_total_18['Name']
+  home_box_score_total_18 = home_box_score_total_18/1000
+  home_box_score_total_18['Name'] = home_lineup_18['name'].tolist()
+
+if len(teams) >= 38:                                               
+  away_lineup_19, home_lineup_19, away_pitcher_19, home_pitcher_19 = set_lineups(36)
+  away_box_score_total_19 = pandas.DataFrame({'Name' : away_lineup_19['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_19 = pandas.DataFrame({'Name' : home_lineup_19['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_19, home_box_19 = game_sim(away_lineup_19, home_lineup_19, away_pitcher_19, home_pitcher_19)
+    away_box_score_total_19 = away_box_score_total_19 + away_box_19
+    home_box_score_total_19 = home_box_score_total_19 + home_box_19
+
+  del away_box_score_total_19['Name']
+  away_box_score_total_19 = away_box_score_total_19/1000
+  away_box_score_total_19['Name'] = away_lineup_19['name'].tolist()
+  del home_box_score_total_19['Name']
+  home_box_score_total_19 = home_box_score_total_19/1000
+  home_box_score_total_19['Name'] = home_lineup_19['name'].tolist()
+
+if len(teams) >= 40:                                               
+  away_lineup_20, home_lineup_20, away_pitcher_20, home_pitcher_20 = set_lineups(38)
+  away_box_score_total_20 = pandas.DataFrame({'Name' : away_lineup_20['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+  home_box_score_total_20 = pandas.DataFrame({'Name' : home_lineup_20['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+
+  for i in range(1000):
+    away_box_20, home_box_20 = game_sim(away_lineup_20, home_lineup_20, away_pitcher_20, home_pitcher_20)
+    away_box_score_total_20 = away_box_score_total_20 + away_box_20
+    home_box_score_total_20 = home_box_score_total_20 + home_box_20
+
+  del away_box_score_total_20['Name']
+  away_box_score_total_20 = away_box_score_total_20/1000
+  away_box_score_total_20['Name'] = away_lineup_20['name'].tolist()
+  del home_box_score_total_20['Name']
+  home_box_score_total_20 = home_box_score_total_20/1000
+  home_box_score_total_20['Name'] = home_lineup_20['name'].tolist()
 
 stop = timeit.default_timer()
 
