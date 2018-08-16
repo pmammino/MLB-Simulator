@@ -474,7 +474,7 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
         half = 'top'
         inning = inning + 1
     
-    return(away_box_score, home_Box_score)    
+    return(away_box_score, home_box_score)    
 
 if len(teams) >= 2:                                               
   away_lineup_1, home_lineup_1, away_pitcher_1, home_pitcher_1 = set_lineups(0)
