@@ -184,6 +184,8 @@ lineups_merged = lineups_merged.rename(index=str, columns={"BB" : "bbR", "K" : "
 lineups_merged = lineups_merged.merge(batter_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vLCode"], right_on = ["m_id"], how = "left")
 lineups_merged = lineups_merged.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single" : "1bL", "Double" : "2bL", "Triple" : "3bL", "HR" : "hrL", "BO" : "boL"})
 
+lineups_merged['bbL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BBL'][0],lineups_merged['bbL'])
+lineups_merged['bbL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BBL'][1],lineups_merged['bbL'])
 
 merge_2 = pitcher_steamer[["name","mlbamid"]].drop_duplicates()
 
