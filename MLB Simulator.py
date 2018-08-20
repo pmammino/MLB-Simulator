@@ -90,8 +90,6 @@ def at_bat(pitcher, hitter):
     
     return(result)
   
-
-
 start = timeit.default_timer()
 
 #
@@ -101,6 +99,7 @@ start = timeit.default_timer()
 batter_steamer = pandas.read_csv("steamer_batter_2018.csv")
 pitcher_steamer = pandas.read_csv("steamer_pitcher_2018.csv")
 
+dummy_hitter_pitcher = pandas.read_excel("DummyHitter.xls", sheetname = "DummyHitter")
 
 #
 #
