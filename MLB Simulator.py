@@ -186,6 +186,32 @@ lineups_merged = lineups_merged.rename(index=str, columns={"BB" : "bbL", "K" : "
 
 lineups_merged['bbL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BBL'][0],lineups_merged['bbL'])
 lineups_merged['bbL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BBL'][1],lineups_merged['bbL'])
+lineups_merged['kL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['SOL'][0],lineups_merged['kL'])
+lineups_merged['kL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['SOL'][1],lineups_merged['kL'])
+lineups_merged['1bL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['1bL'][0],lineups_merged['1bL'])
+lineups_merged['1bL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['1bL'][1],lineups_merged['1bL'])
+lineups_merged['2bL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['2bL'][0],lineups_merged['2bL'])
+lineups_merged['2bL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['2bL'][1],lineups_merged['2bL'])
+lineups_merged['3bL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['3bL'][0],lineups_merged['3bL'])
+lineups_merged['3bL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['3bL'][1],lineups_merged['3bL'])
+lineups_merged['hrL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['HRL'][0],lineups_merged['hrL'])
+lineups_merged['hrL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['HRL'][1],lineups_merged['hrL'])
+lineups_merged['boL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BOL'][0],lineups_merged['boL'])
+lineups_merged['boL'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BOL'][1],lineups_merged['boL'])
+lineups_merged['bbR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BBR'][0],lineups_merged['bbR'])
+lineups_merged['bbR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BBR'][1],lineups_merged['bbR'])
+lineups_merged['kR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['SOR'][0],lineups_merged['kR'])
+lineups_merged['kR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['SOR'][1],lineups_merged['kR'])
+lineups_merged['1bR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['1bR'][0],lineups_merged['1bR'])
+lineups_merged['1bR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['1bR'][1],lineups_merged['1bR'])
+lineups_merged['2bR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['2bR'][0],lineups_merged['2bR'])
+lineups_merged['2bR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['2bR'][1],lineups_merged['2bR'])
+lineups_merged['3bR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['3bR'][0],lineups_merged['3bR'])
+lineups_merged['3bR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['3bR'][1],lineups_merged['3bR'])
+lineups_merged['hrR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['HRR'][0],lineups_merged['hrR'])
+lineups_merged['hrR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['HRR'][1],lineups_merged['hrR'])
+lineups_merged['boR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BOR'][0],lineups_merged['boR'])
+lineups_merged['boR'] = np.where((pandas.isna(lineups_merged['m_id'])) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BOR'][1],lineups_merged['boR'])
 
 merge_2 = pitcher_steamer[["name","mlbamid"]].drop_duplicates()
 
@@ -197,7 +223,6 @@ pitchers = pitchers.merge(pitcher_steamer[["m_id", "BB", "K", "Single", "Double"
 pitchers = pitchers.rename(index=str, columns={"BB" : "bbR", "K" : "kR", "Single" : "1bR", "Double" : "2bR", "Triple" : "3bR", "HR" : "hrR", "BO" : "boR"})
 pitchers = pitchers.merge(pitcher_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vLCode"], right_on = ["m_id"], how = "left")
 pitchers = pitchers.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single" : "1bL", "Double" : "2bL", "Triple" : "3bL", "HR" : "hrL", "BO" : "boL"})
-
 
 n = 9  #chunk row size
 list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]
