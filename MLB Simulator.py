@@ -526,7 +526,7 @@ def game_repeater(num_sims, lineup_num):
     
     return(away_box_score_total, home_box_score_total, home_win_percentage, home_pythagwin_percentage)
                                                                                                                       
-away_box_score_total_1,home_box_score_total_1,home_win_percentage_1,home_pythagwin_percentage_1 = game_repeater(100,0)
+away_box_score_total_1, home_box_score_total_1, home_win_percentage_1, home_pythagwin_percentage_1 = game_repeater(100,0)
                                                                                                                       
 if len(teams) >= 2:                                               
   away_lineup_1, home_lineup_1, away_pitcher_1, home_pitcher_1 = set_lineups(0)
