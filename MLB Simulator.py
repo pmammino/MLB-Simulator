@@ -525,9 +525,7 @@ def game_repeater(num_sims, lineup_num):
     home_pythagwin_percentage = (home_box_score_total['R'].sum() ** 1.82)/((home_box_score_total['R'].sum() ** 1.82) + (away_box_score_total['R'].sum() ** 1.82))
     
     return(away_box_score_total, home_box_score_total, home_win_percentage, home_pythagwin_percentage)
-                                                                                                                      
-away_box_score_total_1, home_box_score_total_1, home_win_percentage_1, home_pythagwin_percentage_1 = game_repeater(100,0)
-                                                                                                                      
+                                                                                                                                                                                                                                           
 if len(teams) >= 2:                                               
   away_box_score_total_1, home_box_score_total_1, home_win_percentage_1, home_pythagwin_percentage_1 = game_repeater(100,0)
   
@@ -587,6 +585,19 @@ if len(teams) >= 38:
 
 if len(teams) >= 40:                                               
   away_box_score_total_20, home_box_score_total_20, home_win_percentage_20, home_pythagwin_percentage_20 = game_repeater(100,38)
+
+  
+  
+def moneyline_odds_calc(implied_prob):
+  implied_prob_convert = implied_prob * 100
+  if implied_prob_convert >= 50:
+    odds = -(implied_prob_convert/(100-implied_prob_convert))*100
+  else:
+    odds =((100-implied_prob_convert)/implied_prob_convert)*100
+    
+  return(odds)
+
+odds_1 = moneyline_odds_calc(home_win_percentage_1)
 
 stop = timeit.default_timer()
 
