@@ -503,28 +503,28 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     return(away_box_score, home_box_score)    
 
 def game_repeater(num_sims, lineup_num):  
-  away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(lineup_num)
-  away_box_score_total = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
-  home_box_score_total = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
-  home_wins = 0
+    away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(lineup_num)
+    away_box_score_total = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+    home_box_score_total = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+    home_wins = 0
   
-  for i in range(num_sims):
-    away_box, home_box = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)
-    if home_box['R'].sum() > away_box['R'].sum():
-       home_wins = home_wins + 1
-    away_box_score_total = away_box_score_total + away_box
-    home_box_score_total = home_box_score_total + home_box
+    for i in range(num_sims):
+      away_box, home_box = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)
+      if home_box['R'].sum() > away_box['R'].sum():
+         home_wins = home_wins + 1
+      away_box_score_total = away_box_score_total + away_box
+      home_box_score_total = home_box_score_total + home_box
 
-  del away_box_score_total['Name']
-  away_box_score_total = away_box_score_total/num_sims
-  away_box_score_total['Name'] = away_lineup['name'].tolist()
-  del home_box_score_total['Name']
-  home_box_score_total = home_box_score_total/num_sims
-  home_box_score_total['Name'] = home_lineup['name'].tolist()
-  home_win_percentage = home_wins/num_sims
-  home_pythagwin_percentage = (home_box_score_total['R'].sum() ** 1.82)/((home_box_score_total['R'].sum() ** 1.82) + (away_box_score_total['R'].sum()
-  
-  return (away_box_score_total,home_box_score_total,home_win_percentage,home_pythagwin_percentage)
+    del away_box_score_total['Name']
+    away_box_score_total = away_box_score_total/num_sims
+    away_box_score_total['Name'] = away_lineup['name'].tolist()
+    del home_box_score_total['Name']
+    home_box_score_total = home_box_score_total/num_sims
+    home_box_score_total['Name'] = home_lineup['name'].tolist()
+    home_win_percentage = home_wins/num_sims
+    home_pythagwin_percentage = (home_box_score_total['R'].sum() ** 1.82)/((home_box_score_total['R'].sum() ** 1.82) + (away_box_score_total['R'].sum()))
+    
+    return(away_box_score_total, home_box_score_total, home_win_percentage, home_pythagwin_percentage)
                                                                                                                       
 away_box_score_total_1,home_box_score_total_1,home_win_percentage_1,home_pythagwin_percentage_1 = game_repeater(100,0)
                                                                                                                       
