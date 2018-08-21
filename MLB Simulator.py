@@ -538,64 +538,64 @@ n = 9  #chunk row size
 list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]  
                                                                                                                                                                                                                                            
 if len(teams) >= 2:                                               
-  away_box_score_total_1, home_box_score_total_1, home_win_odds_1, home_pythagwin_odds_1 = game_repeater(100,0)
+  away_box_score_total_1, home_box_score_total_1, home_win_odds_1, home_pythagwin_odds_1 = game_repeater(10000,0)
   
 if len(teams) >= 4:                                               
-  away_box_score_total_2, home_box_score_total_2, home_win_odds_2, home_pythagwin_odds_2 = game_repeater(100,2)
+  away_box_score_total_2, home_box_score_total_2, home_win_odds_2, home_pythagwin_odds_2 = game_repeater(10000,2)
   
 if len(teams) >= 6:                                               
-  away_box_score_total_3, home_box_score_total_3, home_win_odds_3, home_pythagwin_odds_3 = game_repeater(100,4)
+  away_box_score_total_3, home_box_score_total_3, home_win_odds_3, home_pythagwin_odds_3 = game_repeater(10000,4)
 
 if len(teams) >= 8:                                               
-  away_box_score_total_4, home_box_score_total_4, home_win_odds_4, home_pythagwin_odds_4 = game_repeater(100,6)
+  away_box_score_total_4, home_box_score_total_4, home_win_odds_4, home_pythagwin_odds_4 = game_repeater(10000,6)
 
 if len(teams) >= 10:                                               
-  away_box_score_total_5, home_box_score_total_5, home_win_odds_5, home_pythagwin_odds_5 = game_repeater(100,8)
+  away_box_score_total_5, home_box_score_total_5, home_win_odds_5, home_pythagwin_odds_5 = game_repeater(10000,8)
 
 if len(teams) >= 12:                                               
-  away_box_score_total_6, home_box_score_total_6, home_win_odds_6, home_pythagwin_odds_6 = game_repeater(100,10)
+  away_box_score_total_6, home_box_score_total_6, home_win_odds_6, home_pythagwin_odds_6 = game_repeater(10000,10)
 
 if len(teams) >= 14:                                               
-  away_box_score_total_7, home_box_score_total_7, home_win_odds_7, home_pythagwin_odds_7 = game_repeater(100,12)
+  away_box_score_total_7, home_box_score_total_7, home_win_odds_7, home_pythagwin_odds_7 = game_repeater(10000,12)
 
 if len(teams) >= 16:                                               
-  away_box_score_total_8, home_box_score_total_8, home_win_odds_8, home_pythagwin_odds_8 = game_repeater(100,14)
+  away_box_score_total_8, home_box_score_total_8, home_win_odds_8, home_pythagwin_odds_8 = game_repeater(10000,14)
 
 if len(teams) >= 18:                                               
-  away_box_score_total_9, home_box_score_total_9, home_win_odds_9, home_pythagwin_odds_9 = game_repeater(100,16)
+  away_box_score_total_9, home_box_score_total_9, home_win_odds_9, home_pythagwin_odds_9 = game_repeater(10000,16)
 
 if len(teams) >= 20:                                               
-  away_box_score_total_10, home_box_score_total_10, home_win_odds_10, home_pythagwin_odds_10 = game_repeater(100,18)
+  away_box_score_total_10, home_box_score_total_10, home_win_odds_10, home_pythagwin_odds_10 = game_repeater(10000,18)
 
 if len(teams) >= 22:                                               
-  away_box_score_total_11, home_box_score_total_11, home_win_odds_11, home_pythagwin_odds_11 = game_repeater(100,20)
+  away_box_score_total_11, home_box_score_total_11, home_win_odds_11, home_pythagwin_odds_11 = game_repeater(10000,20)
 
 if len(teams) >= 24:                                               
-  away_box_score_total_12, home_box_score_total_12, home_win_odds_12, home_pythagwin_odds_12 = game_repeater(100,22)
+  away_box_score_total_12, home_box_score_total_12, home_win_odds_12, home_pythagwin_odds_12 = game_repeater(10000,22)
 
 if len(teams) >= 26:                                               
-  away_box_score_total_13, home_box_score_total_13, home_win_odds_13, home_pythagwin_odds_13 = game_repeater(100,24)
+  away_box_score_total_13, home_box_score_total_13, home_win_odds_13, home_pythagwin_odds_13 = game_repeater(10000,24)
 
 if len(teams) >= 28:                                               
-  away_box_score_total_14, home_box_score_total_14, home_win_odds_14, home_pythagwin_odds_14 = game_repeater(100,26)
+  away_box_score_total_14, home_box_score_total_14, home_win_odds_14, home_pythagwin_odds_14 = game_repeater(10000,26)
 
 if len(teams) >= 30:                                               
-  away_box_score_total_15, home_box_score_total_15, home_win_odds_15, home_pythagwin_odds_15 = game_repeater(100,28)
+  away_box_score_total_15, home_box_score_total_15, home_win_odds_15, home_pythagwin_odds_15 = game_repeater(10000,28)
 
 if len(teams) >= 32:                                               
-  away_box_score_total_16, home_box_score_total_16, home_win_odds_16, home_pythagwin_odds_16 = game_repeater(100,30)
+  away_box_score_total_16, home_box_score_total_16, home_win_odds_16, home_pythagwin_odds_16 = game_repeater(10000,30)
 
 if len(teams) >= 34:                                               
-  away_box_score_total_17, home_box_score_total_17, home_win_odds_17, home_pythagwin_odds_17 = game_repeater(100,32)
+  away_box_score_total_17, home_box_score_total_17, home_win_odds_17, home_pythagwin_odds_17 = game_repeater(10000,32)
 
 if len(teams) >= 36:                                               
-  away_box_score_total_18, home_box_score_total_18, home_win_odds_18, home_pythagwin_odds_18 = game_repeater(100,34)
+  away_box_score_total_18, home_box_score_total_18, home_win_odds_18, home_pythagwin_odds_18 = game_repeater(10000,34)
 
 if len(teams) >= 38:                                               
-  away_box_score_total_19, home_box_score_total_19, home_win_odds_19, home_pythagwin_odds_19 = game_repeater(100,36)
+  away_box_score_total_19, home_box_score_total_19, home_win_odds_19, home_pythagwin_odds_19 = game_repeater(10000,36)
 
 if len(teams) >= 40:                                               
-  away_box_score_total_20, home_box_score_total_20, home_win_odds_20, home_pythagwin_odds_20 = game_repeater(100,38)
+  away_box_score_total_20, home_box_score_total_20, home_win_odds_20, home_pythagwin_odds_20 = game_repeater(10000,38)
 
 stop = timeit.default_timer()
 
