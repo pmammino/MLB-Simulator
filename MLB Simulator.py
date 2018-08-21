@@ -522,7 +522,7 @@ if len(teams) >= 2:
   home_box_score_total_1 = home_box_score_total_1/1000
   home_box_score_total_1['Name'] = home_lineup_1['name'].tolist()
   home_win_percentage_1 = home_wins_1/1000
-  home_pythagwin_percentage_1 = (home_box_score_total_1['R'].sum() ^ 1.82)/((home_box_score_total_1['R'].sum()) + (away_box_score_total_1['R'].sum()))
+  home_pythagwin_percentage_1 = (home_box_score_total_1['R'].sum() ** 1.82)/((home_box_score_total_1['R'].sum() ** 1.82) + (away_box_score_total_1['R'].sum() ** 1.82))
   
 if len(teams) >= 4:                                               
   away_lineup_2, home_lineup_2, away_pitcher_2, home_pitcher_2 = set_lineups(2)
