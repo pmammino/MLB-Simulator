@@ -90,143 +90,41 @@ def at_bat(pitcher, hitter):
     
     return(result)
   
-start = timeit.default_timer()
-
-#
-#
-# scrape Steamer projection files
-
-batter_steamer = pandas.read_csv("steamer_batter_2018.csv")
-pitcher_steamer = pandas.read_csv("steamer_pitcher_2018.csv")
-
-dummy_hitter_pitcher = pandas.read_excel("DummyHitter.xlsx", sheetname = "DummyHitter")
-
-#
-#
-# pull lineups from Rotogrinders
-
-res = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
-soup = bs4.BeautifulSoup(res.text, 'lxml')
-
-list1 = []
-
-for i in soup.select('.pname'):
-    list1.append(i.text)
+def moneyline_odds_calc(implied_prob):
+  implied_prob_convert = implied_prob * 100
+  if implied_prob_convert >= 50:
+    odds = -(implied_prob_convert/(100-implied_prob_convert))*100
+  else:
+    odds =((100-implied_prob_convert)/implied_prob_convert)*100
     
-lineups = pandas.DataFrame(list1)
-lineups = lineups[0].str.strip()
-lineups = pandas.DataFrame(lineups)
+  return(odds)
 
-lineups.columns = ["name"]
-
-list2 = []
-
-for i in soup.select('div[class="pitcher players"] a[class="player-popup"]'):
-    list2.append(i.text)
+def game_repeater(num_sims, lineup_num):  
+    away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(lineup_num)
+    away_box_score_total = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+    home_box_score_total = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
+    home_wins = 0
     
-pitchers = pandas.DataFrame(list2)
-pitchers = pitchers[0].str.strip()
-pitchers = pandas.DataFrame(pitchers)
-
-pitchers.columns = ["name"]
-
-#
-#
-# pull teams from Rotogrinders
-
-res2 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
-soup2 = bs4.BeautifulSoup(res2.text, 'lxml')
-
-list3 = []
-
-for i in soup2.select('.shrt'):
-    list3.append(i.text)
+    for i in range(num_sims):
+      away_box, home_box = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)
+      if home_box['R'].sum() > away_box['R'].sum():
+         home_wins = home_wins + 1
+      away_box_score_total = away_box_score_total + away_box
+      home_box_score_total = home_box_score_total + home_box
     
-teams = pandas.DataFrame(list3)
-
-res3 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
-soup3 = bs4.BeautifulSoup(res3.text, 'lxml')
-
-list4 = []
-
-for i in soup3.select('span.status span.stats'):
-    list4.append(i.text)
+    del away_box_score_total['Name']
+    away_box_score_total = away_box_score_total/num_sims
+    away_box_score_total['Name'] = away_lineup['name'].tolist()
+    del home_box_score_total['Name']
+    home_box_score_total = home_box_score_total/num_sims
+    home_box_score_total['Name'] = home_lineup['name'].tolist()
+    home_win_percentage = home_wins/num_sims
+    odds_win = moneyline_odds_calc(home_win_percentage)
+    home_pythagwin_percentage = (home_box_score_total['R'].sum() ** 1.82)/((home_box_score_total['R'].sum() ** 1.82) + (away_box_score_total['R'].sum() ** 1.82))
+    odds_pythagwin = moneyline_odds_calc(home_pythagwin_percentage)
     
-handedness = pandas.DataFrame(list4)
-handedness = handedness[0].str.strip()
-handedness = pandas.DataFrame(handedness)
-handedness.columns = ["Bats"]
-handedness = pandas.DataFrame(handedness)
-
-list5 = []
-
-for i in soup3.select('div[class="pitcher players"] span[class="stats"]'):
-    list5.append(i.text)
-    
-pitcher_handedness = pandas.DataFrame(list5)
-pitcher_handedness = pitcher_handedness[0].str.strip()
-pitcher_handedness = pandas.DataFrame(pitcher_handedness)
-pitcher_handedness.columns = ["Throws"]
-pitcher_handedness = pandas.DataFrame(pitcher_handedness)
-
-lineups["Bats"] = handedness
-pitchers["Throws"] = pitcher_handedness
-
-merge = batter_steamer[["name","mlbamid"]].drop_duplicates()
-
-lineups_merged = lineups.merge(merge, on = ["name"], how = "left")
-lineups_merged["vRCode"] = "0-vR-" + lineups_merged['mlbamid'].astype(str).replace('\.0', '', regex=True)
-lineups_merged["vLCode"] = "0-vL-" + lineups_merged['mlbamid'].astype(str).replace('\.0', '', regex=True)
-
-lineups_merged = lineups_merged.merge(batter_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vRCode"], right_on = ["m_id"], how = "left")
-lineups_merged = lineups_merged.rename(index=str, columns={"BB" : "bbR", "K" : "kR", "Single" : "1bR", "Double" : "2bR", "Triple" : "3bR", "HR" : "hrR", "BO" : "boR"})
-
-lineups_merged = lineups_merged.merge(batter_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vLCode"], right_on = ["m_id"], how = "left")
-lineups_merged = lineups_merged.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single" : "1bL", "Double" : "2bL", "Triple" : "3bL", "HR" : "hrL", "BO" : "boL"})
-
-lineups_merged['bbL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BBL'][0],lineups_merged['bbL'])
-lineups_merged['bbL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BBL'][1],lineups_merged['bbL'])
-lineups_merged['kL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['SOL'][0],lineups_merged['kL'])
-lineups_merged['kL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['SOL'][1],lineups_merged['kL'])
-lineups_merged['1bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['1bL'][0],lineups_merged['1bL'])
-lineups_merged['1bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['1bL'][1],lineups_merged['1bL'])
-lineups_merged['2bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['2bL'][0],lineups_merged['2bL'])
-lineups_merged['2bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['2bL'][1],lineups_merged['2bL'])
-lineups_merged['3bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['3bL'][0],lineups_merged['3bL'])
-lineups_merged['3bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['3bL'][1],lineups_merged['3bL'])
-lineups_merged['hrL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['HRL'][0],lineups_merged['hrL'])
-lineups_merged['hrL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['HRL'][1],lineups_merged['hrL'])
-lineups_merged['boL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BOL'][0],lineups_merged['boL'])
-lineups_merged['boL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BOL'][1],lineups_merged['boL'])
-lineups_merged['bbR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BBR'][0],lineups_merged['bbR'])
-lineups_merged['bbR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BBR'][1],lineups_merged['bbR'])
-lineups_merged['kR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['SOR'][0],lineups_merged['kR'])
-lineups_merged['kR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['SOR'][1],lineups_merged['kR'])
-lineups_merged['1bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['1bR'][0],lineups_merged['1bR'])
-lineups_merged['1bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['1bR'][1],lineups_merged['1bR'])
-lineups_merged['2bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['2bR'][0],lineups_merged['2bR'])
-lineups_merged['2bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['2bR'][1],lineups_merged['2bR'])
-lineups_merged['3bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['3bR'][0],lineups_merged['3bR'])
-lineups_merged['3bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['3bR'][1],lineups_merged['3bR'])
-lineups_merged['hrR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['HRR'][0],lineups_merged['hrR'])
-lineups_merged['hrR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['HRR'][1],lineups_merged['hrR'])
-lineups_merged['boR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BOR'][0],lineups_merged['boR'])
-lineups_merged['boR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BOR'][1],lineups_merged['boR'])
-
-merge_2 = pitcher_steamer[["name","mlbamid"]].drop_duplicates()
-
-pitchers = pitchers.merge(merge_2, on = ["name"], how = "left")
-pitchers["vRCode"] = "SP-0-vR-" + pitchers['mlbamid'].astype(str).replace('\.0', '', regex=True)
-pitchers["vLCode"] = "SP-0-vL-" + pitchers['mlbamid'].astype(str).replace('\.0', '', regex=True)
-
-pitchers = pitchers.merge(pitcher_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vRCode"], right_on = ["m_id"], how = "left")
-pitchers = pitchers.rename(index=str, columns={"BB" : "bbR", "K" : "kR", "Single" : "1bR", "Double" : "2bR", "Triple" : "3bR", "HR" : "hrR", "BO" : "boR"})
-pitchers = pitchers.merge(pitcher_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vLCode"], right_on = ["m_id"], how = "left")
-pitchers = pitchers.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single" : "1bL", "Double" : "2bL", "Triple" : "3bL", "HR" : "hrL", "BO" : "boL"})
-
-n = 9  #chunk row size
-list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]
-
+    return(away_box_score_total, home_box_score_total, odds_win, odds_pythagwin)
+  
 ###Function To Simulate One Game
 def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     inning = 1
@@ -500,104 +398,204 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
         half = 'top'
         inning = inning + 1
     
-    return(away_box_score, home_box_score)    
+    return(away_box_score, home_box_score)  
+  
+start = timeit.default_timer()
 
-def game_repeater(num_sims, lineup_num):  
-    away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(lineup_num)
-    away_box_score_total = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
-    home_box_score_total = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
-    home_wins = 0
+#
+#
+# scrape Steamer projection files
+
+batter_steamer = pandas.read_csv("steamer_batter_2018.csv")
+pitcher_steamer = pandas.read_csv("steamer_pitcher_2018.csv")
+
+dummy_hitter_pitcher = pandas.read_excel("DummyHitter.xlsx", sheetname = "DummyHitter")
+
+#
+#
+# pull lineups from Rotogrinders
+
+res = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
+soup = bs4.BeautifulSoup(res.text, 'lxml')
+
+list1 = []
+
+for i in soup.select('.pname'):
+    list1.append(i.text)
     
-    for i in range(num_sims):
-      away_box, home_box = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)
-      if home_box['R'].sum() > away_box['R'].sum():
-         home_wins = home_wins + 1
-      away_box_score_total = away_box_score_total + away_box
-      home_box_score_total = home_box_score_total + home_box
+lineups = pandas.DataFrame(list1)
+lineups = lineups[0].str.strip()
+lineups = pandas.DataFrame(lineups)
+
+lineups.columns = ["name"]
+
+list2 = []
+
+for i in soup.select('div[class="pitcher players"] a[class="player-popup"]'):
+    list2.append(i.text)
     
-    del away_box_score_total['Name']
-    away_box_score_total = away_box_score_total/num_sims
-    away_box_score_total['Name'] = away_lineup['name'].tolist()
-    del home_box_score_total['Name']
-    home_box_score_total = home_box_score_total/num_sims
-    home_box_score_total['Name'] = home_lineup['name'].tolist()
-    home_win_percentage = home_wins/num_sims
-    home_pythagwin_percentage = (home_box_score_total['R'].sum() ** 1.82)/((home_box_score_total['R'].sum() ** 1.82) + (away_box_score_total['R'].sum() ** 1.82))
+pitchers = pandas.DataFrame(list2)
+pitchers = pitchers[0].str.strip()
+pitchers = pandas.DataFrame(pitchers)
+
+pitchers.columns = ["name"]
+
+#
+#
+# pull teams from Rotogrinders
+
+res2 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
+soup2 = bs4.BeautifulSoup(res2.text, 'lxml')
+
+list3 = []
+
+for i in soup2.select('.shrt'):
+    list3.append(i.text)
     
-    return(away_box_score_total, home_box_score_total, home_win_percentage, home_pythagwin_percentage)
+teams = pandas.DataFrame(list3)
+
+res3 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
+soup3 = bs4.BeautifulSoup(res3.text, 'lxml')
+
+list4 = []
+
+for i in soup3.select('span.status span.stats'):
+    list4.append(i.text)
+    
+handedness = pandas.DataFrame(list4)
+handedness = handedness[0].str.strip()
+handedness = pandas.DataFrame(handedness)
+handedness.columns = ["Bats"]
+handedness = pandas.DataFrame(handedness)
+
+list5 = []
+
+for i in soup3.select('div[class="pitcher players"] span[class="stats"]'):
+    list5.append(i.text)
+    
+pitcher_handedness = pandas.DataFrame(list5)
+pitcher_handedness = pitcher_handedness[0].str.strip()
+pitcher_handedness = pandas.DataFrame(pitcher_handedness)
+pitcher_handedness.columns = ["Throws"]
+pitcher_handedness = pandas.DataFrame(pitcher_handedness)
+
+lineups["Bats"] = handedness
+pitchers["Throws"] = pitcher_handedness
+
+merge = batter_steamer[["name","mlbamid"]].drop_duplicates()
+
+lineups_merged = lineups.merge(merge, on = ["name"], how = "left")
+lineups_merged["vRCode"] = "0-vR-" + lineups_merged['mlbamid'].astype(str).replace('\.0', '', regex=True)
+lineups_merged["vLCode"] = "0-vL-" + lineups_merged['mlbamid'].astype(str).replace('\.0', '', regex=True)
+
+lineups_merged = lineups_merged.merge(batter_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vRCode"], right_on = ["m_id"], how = "left")
+lineups_merged = lineups_merged.rename(index=str, columns={"BB" : "bbR", "K" : "kR", "Single" : "1bR", "Double" : "2bR", "Triple" : "3bR", "HR" : "hrR", "BO" : "boR"})
+
+lineups_merged = lineups_merged.merge(batter_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vLCode"], right_on = ["m_id"], how = "left")
+lineups_merged = lineups_merged.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single" : "1bL", "Double" : "2bL", "Triple" : "3bL", "HR" : "hrL", "BO" : "boL"})
+
+lineups_merged['bbL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BBL'][0],lineups_merged['bbL'])
+lineups_merged['bbL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BBL'][1],lineups_merged['bbL'])
+lineups_merged['kL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['SOL'][0],lineups_merged['kL'])
+lineups_merged['kL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['SOL'][1],lineups_merged['kL'])
+lineups_merged['1bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['1bL'][0],lineups_merged['1bL'])
+lineups_merged['1bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['1bL'][1],lineups_merged['1bL'])
+lineups_merged['2bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['2bL'][0],lineups_merged['2bL'])
+lineups_merged['2bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['2bL'][1],lineups_merged['2bL'])
+lineups_merged['3bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['3bL'][0],lineups_merged['3bL'])
+lineups_merged['3bL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['3bL'][1],lineups_merged['3bL'])
+lineups_merged['hrL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['HRL'][0],lineups_merged['hrL'])
+lineups_merged['hrL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['HRL'][1],lineups_merged['hrL'])
+lineups_merged['boL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BOL'][0],lineups_merged['boL'])
+lineups_merged['boL'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BOL'][1],lineups_merged['boL'])
+lineups_merged['bbR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BBR'][0],lineups_merged['bbR'])
+lineups_merged['bbR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BBR'][1],lineups_merged['bbR'])
+lineups_merged['kR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['SOR'][0],lineups_merged['kR'])
+lineups_merged['kR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['SOR'][1],lineups_merged['kR'])
+lineups_merged['1bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['1bR'][0],lineups_merged['1bR'])
+lineups_merged['1bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['1bR'][1],lineups_merged['1bR'])
+lineups_merged['2bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['2bR'][0],lineups_merged['2bR'])
+lineups_merged['2bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['2bR'][1],lineups_merged['2bR'])
+lineups_merged['3bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['3bR'][0],lineups_merged['3bR'])
+lineups_merged['3bR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['3bR'][1],lineups_merged['3bR'])
+lineups_merged['hrR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['HRR'][0],lineups_merged['hrR'])
+lineups_merged['hrR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['HRR'][1],lineups_merged['hrR'])
+lineups_merged['boR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'L'), dummy_hitter_pitcher['BOR'][0],lineups_merged['boR'])
+lineups_merged['boR'] = np.where((lineups_merged['mlbamid'].isnull()) & (lineups_merged['Bats'] == 'R'), dummy_hitter_pitcher['BOR'][1],lineups_merged['boR'])
+
+merge_2 = pitcher_steamer[["name","mlbamid"]].drop_duplicates()
+
+pitchers = pitchers.merge(merge_2, on = ["name"], how = "left")
+pitchers["vRCode"] = "SP-0-vR-" + pitchers['mlbamid'].astype(str).replace('\.0', '', regex=True)
+pitchers["vLCode"] = "SP-0-vL-" + pitchers['mlbamid'].astype(str).replace('\.0', '', regex=True)
+
+pitchers = pitchers.merge(pitcher_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vRCode"], right_on = ["m_id"], how = "left")
+pitchers = pitchers.rename(index=str, columns={"BB" : "bbR", "K" : "kR", "Single" : "1bR", "Double" : "2bR", "Triple" : "3bR", "HR" : "hrR", "BO" : "boR"})
+pitchers = pitchers.merge(pitcher_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vLCode"], right_on = ["m_id"], how = "left")
+pitchers = pitchers.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single" : "1bL", "Double" : "2bL", "Triple" : "3bL", "HR" : "hrL", "BO" : "boL"})
+
+n = 9  #chunk row size
+list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]  
                                                                                                                                                                                                                                            
 if len(teams) >= 2:                                               
-  away_box_score_total_1, home_box_score_total_1, home_win_percentage_1, home_pythagwin_percentage_1 = game_repeater(100,0)
+  away_box_score_total_1, home_box_score_total_1, home_win_odds_1, home_pythagwin_odds_1 = game_repeater(100,0)
   
 if len(teams) >= 4:                                               
-  away_box_score_total_2, home_box_score_total_2, home_win_percentage_2, home_pythagwin_percentage_2 = game_repeater(100,2)
+  away_box_score_total_2, home_box_score_total_2, home_win_odds_2, home_pythagwin_odds_2 = game_repeater(100,2)
   
 if len(teams) >= 6:                                               
-  away_box_score_total_3, home_box_score_total_3, home_win_percentage_3, home_pythagwin_percentage_3 = game_repeater(100,4)
+  away_box_score_total_3, home_box_score_total_3, home_win_odds_3, home_pythagwin_odds_3 = game_repeater(100,4)
 
 if len(teams) >= 8:                                               
-  away_box_score_total_4, home_box_score_total_4, home_win_percentage_4, home_pythagwin_percentage_4 = game_repeater(100,6)
+  away_box_score_total_4, home_box_score_total_4, home_win_odds_4, home_pythagwin_odds_4 = game_repeater(100,6)
 
 if len(teams) >= 10:                                               
-  away_box_score_total_5, home_box_score_total_5, home_win_percentage_5, home_pythagwin_percentage_5 = game_repeater(100,8)
+  away_box_score_total_5, home_box_score_total_5, home_win_odds_5, home_pythagwin_odds_5 = game_repeater(100,8)
 
 if len(teams) >= 12:                                               
-  away_box_score_total_6, home_box_score_total_6, home_win_percentage_6, home_pythagwin_percentage_6 = game_repeater(100,10)
+  away_box_score_total_6, home_box_score_total_6, home_win_odds_6, home_pythagwin_odds_6 = game_repeater(100,10)
 
 if len(teams) >= 14:                                               
-  away_box_score_total_7, home_box_score_total_7, home_win_percentage_7, home_pythagwin_percentage_7 = game_repeater(100,12)
+  away_box_score_total_7, home_box_score_total_7, home_win_odds_7, home_pythagwin_odds_7 = game_repeater(100,12)
 
 if len(teams) >= 16:                                               
-  away_box_score_total_8, home_box_score_total_8, home_win_percentage_8, home_pythagwin_percentage_8 = game_repeater(100,14)
+  away_box_score_total_8, home_box_score_total_8, home_win_odds_8, home_pythagwin_odds_8 = game_repeater(100,14)
 
 if len(teams) >= 18:                                               
-  away_box_score_total_9, home_box_score_total_9, home_win_percentage_9, home_pythagwin_percentage_9 = game_repeater(100,16)
+  away_box_score_total_9, home_box_score_total_9, home_win_odds_9, home_pythagwin_odds_9 = game_repeater(100,16)
 
 if len(teams) >= 20:                                               
-  away_box_score_total_10, home_box_score_total_10, home_win_percentage_10, home_pythagwin_percentage_10 = game_repeater(100,18)
+  away_box_score_total_10, home_box_score_total_10, home_win_odds_10, home_pythagwin_odds_10 = game_repeater(100,18)
 
 if len(teams) >= 22:                                               
-  away_box_score_total_11, home_box_score_total_11, home_win_percentage_11, home_pythagwin_percentage_11 = game_repeater(100,20)
+  away_box_score_total_11, home_box_score_total_11, home_win_odds_11, home_pythagwin_odds_11 = game_repeater(100,20)
 
 if len(teams) >= 24:                                               
-  away_box_score_total_12, home_box_score_total_12, home_win_percentage_12, home_pythagwin_percentage_12 = game_repeater(100,22)
+  away_box_score_total_12, home_box_score_total_12, home_win_odds_12, home_pythagwin_odds_12 = game_repeater(100,22)
 
 if len(teams) >= 26:                                               
-  away_box_score_total_13, home_box_score_total_13, home_win_percentage_13, home_pythagwin_percentage_13 = game_repeater(100,24)
+  away_box_score_total_13, home_box_score_total_13, home_win_odds_13, home_pythagwin_odds_13 = game_repeater(100,24)
 
 if len(teams) >= 28:                                               
-  away_box_score_total_14, home_box_score_total_14, home_win_percentage_14, home_pythagwin_percentage_14 = game_repeater(100,26)
+  away_box_score_total_14, home_box_score_total_14, home_win_odds_14, home_pythagwin_odds_14 = game_repeater(100,26)
 
 if len(teams) >= 30:                                               
-  away_box_score_total_15, home_box_score_total_15, home_win_percentage_15, home_pythagwin_percentage_15 = game_repeater(100,28)
+  away_box_score_total_15, home_box_score_total_15, home_win_odds_15, home_pythagwin_odds_15 = game_repeater(100,28)
 
 if len(teams) >= 32:                                               
-  away_box_score_total_16, home_box_score_total_16, home_win_percentage_16, home_pythagwin_percentage_16 = game_repeater(100,30)
+  away_box_score_total_16, home_box_score_total_16, home_win_odds_16, home_pythagwin_odds_16 = game_repeater(100,30)
 
 if len(teams) >= 34:                                               
-  away_box_score_total_17, home_box_score_total_17, home_win_percentage_17, home_pythagwin_percentage_17 = game_repeater(100,32)
+  away_box_score_total_17, home_box_score_total_17, home_win_odds_17, home_pythagwin_odds_17 = game_repeater(100,32)
 
 if len(teams) >= 36:                                               
-  away_box_score_total_18, home_box_score_total_18, home_win_percentage_18, home_pythagwin_percentage_18 = game_repeater(100,34)
+  away_box_score_total_18, home_box_score_total_18, home_win_odds_18, home_pythagwin_odds_18 = game_repeater(100,34)
 
 if len(teams) >= 38:                                               
-  away_box_score_total_19, home_box_score_total_19, home_win_percentage_19, home_pythagwin_percentage_19 = game_repeater(100,36)
+  away_box_score_total_19, home_box_score_total_19, home_win_odds_19, home_pythagwin_odds_19 = game_repeater(100,36)
 
 if len(teams) >= 40:                                               
-  away_box_score_total_20, home_box_score_total_20, home_win_percentage_20, home_pythagwin_percentage_20 = game_repeater(100,38)
-
-  
-  
-def moneyline_odds_calc(implied_prob):
-  implied_prob_convert = implied_prob * 100
-  if implied_prob_convert >= 50:
-    odds = -(implied_prob_convert/(100-implied_prob_convert))*100
-  else:
-    odds =((100-implied_prob_convert)/implied_prob_convert)*100
-    
-  return(odds)
-
-odds_1 = moneyline_odds_calc(home_win_percentage_1)
+  away_box_score_total_20, home_box_score_total_20, home_win_odds_20, home_pythagwin_odds_20 = game_repeater(100,38)
 
 stop = timeit.default_timer()
 
