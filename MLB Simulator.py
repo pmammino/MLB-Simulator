@@ -522,7 +522,7 @@ def game_repeater(num_sims, lineup_num):
     home_box_score_total = home_box_score_total/num_sims
     home_box_score_total['Name'] = home_lineup['name'].tolist()
     home_win_percentage = home_wins/num_sims
-    home_pythagwin_percentage = (home_box_score_total['R'].sum() ** 1.82)/((home_box_score_total['R'].sum() ** 1.82) + (away_box_score_total['R'].sum()))
+    home_pythagwin_percentage = (home_box_score_total['R'].sum() ** 1.82)/((home_box_score_total['R'].sum() ** 1.82) + (away_box_score_total['R'].sum() ** 1.82))
     
     return(away_box_score_total, home_box_score_total, home_win_percentage, home_pythagwin_percentage)
                                                                                                                       
