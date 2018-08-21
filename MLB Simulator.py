@@ -510,7 +510,7 @@ if len(teams) >= 2:
   
   for i in range(1000):
     away_box_1, home_box_1 = game_sim(away_lineup_1, home_lineup_1, away_pitcher_1, home_pitcher_1)
-    if home_box_1['R'].sum() > away_box_1['R'].sum:
+    if home_box_1['R'].sum() > away_box_1['R'].sum():
        home_wins_1 = home_wins_1 + 1
     away_box_score_total_1 = away_box_score_total_1 + away_box_1
     home_box_score_total_1 = home_box_score_total_1 + home_box_1
