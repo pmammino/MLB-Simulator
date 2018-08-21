@@ -506,9 +506,12 @@ if len(teams) >= 2:
   away_lineup_1, home_lineup_1, away_pitcher_1, home_pitcher_1 = set_lineups(0)
   away_box_score_total_1 = pandas.DataFrame({'Name' : away_lineup_1['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
   home_box_score_total_1 = pandas.DataFrame({'Name' : home_lineup_1['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
-
+  home_wins_1 = 0
+  
   for i in range(1000):
     away_box_1, home_box_1 = game_sim(away_lineup_1, home_lineup_1, away_pitcher_1, home_pitcher_1)
+    if Total = home_box_1['R'].sum() > away_box_1['R'].sum:
+       home_wins_1 = home_wins_1 + 1
     away_box_score_total_1 = away_box_score_total_1 + away_box_1
     home_box_score_total_1 = home_box_score_total_1 + home_box_1
 
@@ -518,6 +521,7 @@ if len(teams) >= 2:
   del home_box_score_total_1['Name']
   home_box_score_total_1 = home_box_score_total_1/1000
   home_box_score_total_1['Name'] = home_lineup_1['name'].tolist()
+  home_win_percentage_1 = home_wins_1/1000
   
 if len(teams) >= 4:                                               
   away_lineup_2, home_lineup_2, away_pitcher_2, home_pitcher_2 = set_lineups(2)
