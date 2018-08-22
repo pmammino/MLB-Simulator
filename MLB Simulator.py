@@ -123,7 +123,7 @@ def game_repeater(num_sims, lineup_num):
     home_pythagwin_percentage = (home_box_score_total['R'].sum() ** 1.82)/((home_box_score_total['R'].sum() ** 1.82) + (away_box_score_total['R'].sum() ** 1.82))
     odds_pythagwin = moneyline_odds_calc(home_pythagwin_percentage)
     away_runs_scored = away_box_score_total['R'].sum()
-    home_runs_scored = home_box_score_total['R].sum()
+    home_runs_scored = home_box_score_total['R'].sum()
     
     return(away_box_score_total, home_box_score_total, odds_win, odds_pythagwin, away_runs_scored, home_runs_scored)
   
