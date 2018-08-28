@@ -8,7 +8,5 @@ Things To Implement
       
       Set rules to iterate pitch count based on average pitches per at bat
       Once pitcher reaches x number of pitches remove from game switch pitcher
-      
-  3. Optimize Code to run alternating innings and actually simulate a game
   
-  4. Park factors, weather, etc
+  3. Park factors, weather, etc
