@@ -4,8 +4,6 @@ import pandas
 import timeit
 import numpy as np
 
-
-
 ## Function Definitions
 
 def set_lineups(n):
@@ -136,6 +134,10 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
     home_batter = 0
     away_runs = 0
     home_runs = 0
+    away_starter_pc = 0
+    home_starter_pc = 0
+    away_pitcher_type == 'starter'
+    home_pitcher_type == 'starter'
     away_box_score = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
     home_box_score = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
     
@@ -254,6 +256,7 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
               away_runs = away_runs + 1
               away_box_score['R'] = np.where(away_box_score['Name']==first_base, away_box_score['R'] + 1, away_box_score['R'])                                                
               first_base = ''
+            home_starter_pc = home_starter_pc + home_pitcher.at[0,"Pit/PA"]
             away_runs = away_runs + 1
             away_box_score['R'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['R'] + 1, away_box_score['R'])
             runs_diff = away_runs - runs_before
@@ -261,7 +264,8 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
             away_box_score['H'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['H'] + 1, away_box_score['H'])
             away_box_score['HR'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['Triple'] + 1, away_box_score['Triple'])
             away_box_score['RBI'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['RBI'] + runs_diff, away_box_score['RBI'])                                                                                      
-                                                  
+            if (home_pitcher_type == 'starter' && home_starter_pc > home_pitcher.at[0,"Pit/GS"]):
+              home_pitcher_type == 'bullpen'                                      
           
           if (away_batter == 8):
             away_batter = 0
@@ -386,6 +390,7 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
               home_runs = home_runs + 1
               home_box_score['R'] = np.where(home_box_score['Name']==first_base, home_box_score['R'] + 1, home_box_score['R'])                                                
               first_base = ''
+            away_starter_pc = away_starter_pc + away_pitcher.at[0,"Pit/PA"]
             home_runs = home_runs + 1
             home_box_score['R'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['R'] + 1, home_box_score['R'])
             runs_diff = home_runs - runs_before
@@ -393,7 +398,9 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
             home_box_score['H'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['H'] + 1, home_box_score['H'])
             home_box_score['HR'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['Triple'] + 1, home_box_score['Triple'])
             home_box_score['RBI'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['RBI'] + runs_diff, home_box_score['RBI'])       
-          
+            if (away_pitcher_type == 'starter' && away_starter_pc > away_pitcher.at[0,"Pit/GS"]):
+              away_pitcher_type == 'bullpen'
+
           if (home_batter == 8):
             home_batter = 0
           else:
@@ -405,7 +412,7 @@ def game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher):
   
 start = timeit.default_timer()
 
-#
+#DATA SCRAPING
 #
 # scrape Steamer projection files
 
