@@ -274,7 +274,7 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
             away_box_score['H'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['H'] + 1, away_box_score['H'])
             away_box_score['HR'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['Triple'] + 1, away_box_score['Triple'])
             away_box_score['RBI'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['RBI'] + runs_diff, away_box_score['RBI'])                                                                                      
-            if (home_pitcher_type == 'starter' && home_starter_pc > home_pitcher.at[0,"Pit/GS"]):
+            if (home_pitcher_type == 'starter' and home_starter_pc > home_pitcher.at[0,"Pit/GS"]):
               home_pitcher_type == 'bullpen'                                      
           
           if (away_batter == 8):
@@ -408,7 +408,7 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
             home_box_score['H'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['H'] + 1, home_box_score['H'])
             home_box_score['HR'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['Triple'] + 1, home_box_score['Triple'])
             home_box_score['RBI'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['RBI'] + runs_diff, home_box_score['RBI'])       
-            if (away_pitcher_type == 'starter' && away_starter_pc > away_pitcher.at[0,"Pit/GS"]):
+            if (away_pitcher_type == 'starter' and away_starter_pc > away_pitcher.at[0,"Pit/GS"]):
               away_pitcher_type == 'bullpen'
 
           if (home_batter == 8):
