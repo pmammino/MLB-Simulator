@@ -14,7 +14,7 @@ def set_lineups(n):
   return(away_lineup, home_lineup, away_pitcher, home_pitcher)
 
 def at_bat(pitcher,bullpen,bullpen_usage,pitcher_type, hitter):
-    if pitcher_type == 'bullpen:
+    if pitcher_type == 'bullpen':
        if hitter.at[0,"Bats"] == "R":
          handedness = np.random.choice(["R","L", 1, p=[bullpen_usage.at[0,"vRHH"],1-bullpen_usage.at[0,"vRHH"]])
        else:
