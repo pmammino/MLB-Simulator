@@ -3,6 +3,9 @@ import requests
 import pandas
 import timeit
 import numpy as np
+import difflib 
+
+
 
 ## Function Definitions
 
@@ -16,9 +19,9 @@ def set_lineups(n):
 def at_bat(pitcher,bullpen,bullpen_usage,pitcher_type, hitter):
     if pitcher_type == 'bullpen':
        if hitter.at[0,"Bats"] == "R":
-         handedness = np.random.choice(["R","L", 1, p=[bullpen_usage.at[0,"vRHH"],1-bullpen_usage.at[0,"vRHH"]])
+         handedness = np.random.choice(["R","L"], 1, p=[bullpen_usage.at[0,"vRHH"],1-bullpen_usage.at[0,"vRHH"]])
        else:
-         handedness = np.random.choice(["R","L", 1, p=[bullpen_usage.at[0,"vLHH"],1-bullpen_usage.at[0,"vLHH"]])
+         handedness = np.random.choice(["R","L"], 1, p=[bullpen_usage.at[0,"vLHH"],1-bullpen_usage.at[0,"vLHH"]])
        pitcher = bullpen.loc[bullpen['Throws'] == handedness]
     if pitcher.at[0,"Throws"] == "R":
        batter_p1b = hitter.at[0,"1bR"]
@@ -103,14 +106,14 @@ def moneyline_odds_calc(implied_prob):
     
   return(odds)
 
-def game_repeater(num_sims, lineup_num):  
+def game_repeater(num_sims, lineup_num,away_team,home_team):  
     away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(lineup_num)
     away_box_score_total = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
     home_box_score_total = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
     home_wins = 0
     
     for i in range(num_sims):
-      away_box, home_box = game_sim(away_lineup, home_lineup, away_pitcher, home_pitcher)
+      away_box, home_box = game_sim(away_team,home_team, away_lineup, home_lineup, away_pitcher, home_pitcher)
       if home_box['R'].sum() > away_box['R'].sum():
          home_wins = home_wins + 1
       away_box_score_total = away_box_score_total + away_box
@@ -292,7 +295,7 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
         second_base = ''
         third_base = ''
         while (outs < 3):
-          pa_result = at_bat(away_pitcher,away_bullpen,away_bullpen_usage,away_pitcher_typepandas.DataFrame(home_lineup.iloc[home_batter]).T.reset_index(drop = True))
+          pa_result = at_bat(away_pitcher,away_bullpen,away_bullpen_usage,away_pitcher_type,pandas.DataFrame(home_lineup.iloc[home_batter]).T.reset_index(drop = True))
           
           if(pa_result == 'bo' or pa_result == 'so'):
             outs = outs + 1
@@ -432,6 +435,9 @@ pitcher_steamer = pandas.read_csv("steamer_pitcher_2018.csv")
 dummy_hitter_pitcher = pandas.read_excel("DummyHitter.xlsx", sheetname = "DummyHitter")
 bullpens = pandas.read_excel("Bullpens.xlsx", sheetname = "Bullpens")
 bullpens_usage = pandas.read_excel("Bullpens.xlsx", sheetname = "BullpensUsage")
+starter_pitch_counts = pandas.read_excel("PitchCount.xlsx",sheetname = "Starters")
+per_at_bat_pitch_counts = pandas.read_excel("PitchCount.xlsx",sheetname = "Pitches")
+
 
 #
 #
@@ -555,6 +561,26 @@ pitchers = pitchers.merge(pitcher_steamer[["m_id", "BB", "K", "Single", "Double"
 pitchers = pitchers.rename(index=str, columns={"BB" : "bbR", "K" : "kR", "Single" : "1bR", "Double" : "2bR", "Triple" : "3bR", "HR" : "hrR", "BO" : "boR"})
 pitchers = pitchers.merge(pitcher_steamer[["m_id", "BB", "K", "Single", "Double", "Triple", "HR", "BO"]], left_on = ["vLCode"], right_on = ["m_id"], how = "left")
 pitchers = pitchers.rename(index=str, columns={"BB" : "bbL", "K" : "kL", "Single" : "1bL", "Double" : "2bL", "Triple" : "3bL", "HR" : "hrL", "BO" : "boL"})
+per_at_bat_pitch_counts = per_at_bat_pitch_counts[['Name','Pit/PA']]
+starter_pitch_counts = starter_pitch_counts[['Name','Pit/GS']]
+per_at_bat_pitch_counts['Name'] = per_at_bat_pitch_counts['Name'].apply(lambda x: difflib.get_close_matches(x, merge_2['name']))
+per_at_bat_pitch_counts = per_at_bat_pitch_counts[per_at_bat_pitch_counts.Name.astype(bool)]
+per_at_bat_pitch_counts = per_at_bat_pitch_counts.reset_index(drop=True)
+for i in range(len(per_at_bat_pitch_counts)):
+    per_at_bat_pitch_counts['Name'][i] = per_at_bat_pitch_counts['Name'][i][0]
+pitchers = pitchers.merge(per_at_bat_pitch_counts, left_on = ["name"], right_on = ["Name"], how = "left")
+pitchers = pitchers.drop_duplicates(subset = ['name'])
+
+starter_pitch_counts['Name'] = starter_pitch_counts['Name'].apply(lambda x: difflib.get_close_matches(x, merge_2['name']))
+starter_pitch_counts = starter_pitch_counts[starter_pitch_counts.Name.astype(bool)]
+starter_pitch_counts = starter_pitch_counts.reset_index(drop=True)
+for i in range(len(starter_pitch_counts)):
+    starter_pitch_counts['Name'][i] = starter_pitch_counts['Name'][i][0]
+pitchers = pitchers.merge(starter_pitch_counts, left_on = ["name"], right_on = ["Name"], how = "left")
+pitchers = pitchers.drop_duplicates(subset = ['name'])
+pitchers = pitchers.drop('Name_x',axis = 1)
+pitchers = pitchers.drop('Name_y',axis = 1)
+
 
 n = 9  #chunk row size
 list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]  
@@ -562,7 +588,7 @@ list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n
 game_summary = pandas.DataFrame(columns=['Away Team', 'Home Team', 'Home Odds', 'Home Pythag Odds', 'Away Runs', 'Home Runs', 'Total Runs'])
 
 if len(teams) >= 2:                                               
-  away_box_score_total_1, home_box_score_total_1, home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1 = game_repeater(1000,0)
+  away_box_score_total_1, home_box_score_total_1, home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1 = game_repeater(1000,0,teams[0],teams[1])
   game_summary.loc[0] = [teams[0], teams[1], home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1]
   
 if len(teams) >= 4:                                               
@@ -618,11 +644,11 @@ if len(teams) >= 28:
   game_summary.loc[13] = [teams[26], teams[27], home_win_odds_14, home_pythagwin_odds_14, away_runs_scored_14, home_runs_scored_14, total_runs_scored_14]
   
 if len(teams) >= 30:                                               
-  away_box_score_total_15, home_box_score_total_15, home_win_odds_15, home_pythagwin_odds_15, away_runs_scored_165, home_runs_scored_15, total_runs_scored_15 = game_repeater(1000,28)
+  away_box_score_total_15, home_box_score_total_15, home_win_odds_15, home_pythagwin_odds_15, away_runs_scored_15, home_runs_scored_15, total_runs_scored_15 = game_repeater(1000,28)
   game_summary.loc[14] = [teams[28], teams[29], home_win_odds_15, home_pythagwin_odds_15, away_runs_scored_15, home_runs_scored_15, total_runs_scored_15]
   
 if len(teams) >= 32:                                               
-  away_box_score_total_16, home_box_score_total_16, home_win_odds_16, home_pythagwin_odds_16, away_runs_scored_176, home_runs_scored_16, total_runs_scored_16 = game_repeater(1000,30)
+  away_box_score_total_16, home_box_score_total_16, home_win_odds_16, home_pythagwin_odds_16, away_runs_scored_16, home_runs_scored_16, total_runs_scored_16 = game_repeater(1000,30)
   game_summary.loc[15] = [teams[30], teams[31], home_win_odds_16, home_pythagwin_odds_16, away_runs_scored_16, home_runs_scored_16, total_runs_scored_16]
   
 if len(teams) >= 34:                                               
