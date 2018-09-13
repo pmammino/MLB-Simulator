@@ -566,16 +566,14 @@ starter_pitch_counts = starter_pitch_counts[['Name','Pit/GS']]
 per_at_bat_pitch_counts['Name'] = per_at_bat_pitch_counts['Name'].apply(lambda x: difflib.get_close_matches(x, merge_2['name']))
 per_at_bat_pitch_counts = per_at_bat_pitch_counts[per_at_bat_pitch_counts.Name.astype(bool)]
 per_at_bat_pitch_counts = per_at_bat_pitch_counts.reset_index(drop=True)
-for i in range(len(per_at_bat_pitch_counts)):
-    per_at_bat_pitch_counts['Name'][i] = per_at_bat_pitch_counts['Name'][i][0]
+per_at_bat_pitch_counts['Name'] = [item[0] for item in per_at_bat_pitch_counts['Name']]
 pitchers = pitchers.merge(per_at_bat_pitch_counts, left_on = ["name"], right_on = ["Name"], how = "left")
 pitchers = pitchers.drop_duplicates(subset = ['name'])
 
 starter_pitch_counts['Name'] = starter_pitch_counts['Name'].apply(lambda x: difflib.get_close_matches(x, merge_2['name']))
 starter_pitch_counts = starter_pitch_counts[starter_pitch_counts.Name.astype(bool)]
 starter_pitch_counts = starter_pitch_counts.reset_index(drop=True)
-for i in range(len(starter_pitch_counts)):
-    starter_pitch_counts['Name'][i] = starter_pitch_counts['Name'][i][0]
+starter_pitch_counts['Name'] = [item[0] for item in starter_pitch_counts['Name']]
 pitchers = pitchers.merge(starter_pitch_counts, left_on = ["name"], right_on = ["Name"], how = "left")
 pitchers = pitchers.drop_duplicates(subset = ['name'])
 pitchers = pitchers.drop('Name_x',axis = 1)
@@ -588,84 +586,84 @@ list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n
 game_summary = pandas.DataFrame(columns=['Away Team', 'Home Team', 'Home Odds', 'Home Pythag Odds', 'Away Runs', 'Home Runs', 'Total Runs'])
 
 if len(teams) >= 2:                                               
-  away_box_score_total_1, home_box_score_total_1, home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1 = game_repeater(1000,0,teams[0],teams[1])
-  game_summary.loc[0] = [teams[0], teams[1], home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1]
+  away_box_score_total_1, home_box_score_total_1, home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1 = game_repeater(1000,0,teams[0][0],teams[0][1])
+  game_summary.loc[0] = [teams[0][0], teams[0][1], home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1]
   
 if len(teams) >= 4:                                               
-  away_box_score_total_2, home_box_score_total_2, home_win_odds_2, home_pythagwin_odds_2, away_runs_scored_2, home_runs_scored_2, total_runs_scored_2 = game_repeater(1000,2)
-  game_summary.loc[1] = [teams[2], teams[13], home_win_odds_2, home_pythagwin_odds_2, away_runs_scored_2, home_runs_scored_2, total_runs_scored_2]
+  away_box_score_total_2, home_box_score_total_2, home_win_odds_2, home_pythagwin_odds_2, away_runs_scored_2, home_runs_scored_2, total_runs_scored_2 = game_repeater(1000,2,teams[0][2],teams[0][3])
+  game_summary.loc[1] = [teams[0][2], teams[0][3], home_win_odds_2, home_pythagwin_odds_2, away_runs_scored_2, home_runs_scored_2, total_runs_scored_2]
   
 if len(teams) >= 6:                                               
-  away_box_score_total_3, home_box_score_total_3, home_win_odds_3, home_pythagwin_odds_3, away_runs_scored_3, home_runs_scored_3, total_runs_scored_3 = game_repeater(1000,4)
-  game_summary.loc[2] = [teams[4], teams[5], home_win_odds_3, home_pythagwin_odds_3, away_runs_scored_3, home_runs_scored_3, total_runs_scored_3]
+  away_box_score_total_3, home_box_score_total_3, home_win_odds_3, home_pythagwin_odds_3, away_runs_scored_3, home_runs_scored_3, total_runs_scored_3 = game_repeater(1000,4,teams[0][4],teams[0][5])
+  game_summary.loc[2] = [teams[0][4], teams[0][5], home_win_odds_3, home_pythagwin_odds_3, away_runs_scored_3, home_runs_scored_3, total_runs_scored_3]
   
 if len(teams) >= 8:                                               
-  away_box_score_total_4, home_box_score_total_4, home_win_odds_4, home_pythagwin_odds_4, away_runs_scored_4, home_runs_scored_4, total_runs_scored_4 = game_repeater(1000,6)
-  game_summary.loc[3] = [teams[6], teams[7], home_win_odds_4, home_pythagwin_odds_4, away_runs_scored_4, home_runs_scored_4, total_runs_scored_4]
+  away_box_score_total_4, home_box_score_total_4, home_win_odds_4, home_pythagwin_odds_4, away_runs_scored_4, home_runs_scored_4, total_runs_scored_4 = game_repeater(1000,6,teams[0][6],teams[0][7])
+  game_summary.loc[3] = [teams[0][6], teams[0][7], home_win_odds_4, home_pythagwin_odds_4, away_runs_scored_4, home_runs_scored_4, total_runs_scored_4]
   
 if len(teams) >= 10:                                               
-  away_box_score_total_5, home_box_score_total_5, home_win_odds_5, home_pythagwin_odds_5, away_runs_scored_5, home_runs_scored_5, total_runs_scored_5 = game_repeater(1000,8)
-  game_summary.loc[4] = [teams[8], teams[9], home_win_odds_5, home_pythagwin_odds_5, away_runs_scored_5, home_runs_scored_5, total_runs_scored_5]
+  away_box_score_total_5, home_box_score_total_5, home_win_odds_5, home_pythagwin_odds_5, away_runs_scored_5, home_runs_scored_5, total_runs_scored_5 = game_repeater(1000,8,teams[0][8],teams[0][9])
+  game_summary.loc[4] = [teams[0][8], teams[0][9], home_win_odds_5, home_pythagwin_odds_5, away_runs_scored_5, home_runs_scored_5, total_runs_scored_5]
   
 if len(teams) >= 12:                                               
-  away_box_score_total_6, home_box_score_total_6, home_win_odds_6, home_pythagwin_odds_6, away_runs_scored_6, home_runs_scored_6, total_runs_scored_6 = game_repeater(1000,10)
-  game_summary.loc[5] = [teams[10], teams[11], home_win_odds_6, home_pythagwin_odds_6, away_runs_scored_6, home_runs_scored_6, total_runs_scored_6]
+  away_box_score_total_6, home_box_score_total_6, home_win_odds_6, home_pythagwin_odds_6, away_runs_scored_6, home_runs_scored_6, total_runs_scored_6 = game_repeater(1000,10,teams[0][10],teams[0][11])
+  game_summary.loc[5] = [teams[0][10], teams[0][11], home_win_odds_6, home_pythagwin_odds_6, away_runs_scored_6, home_runs_scored_6, total_runs_scored_6]
   
 if len(teams) >= 14:                                               
-  away_box_score_total_7, home_box_score_total_7, home_win_odds_7, home_pythagwin_odds_7, away_runs_scored_7, home_runs_scored_7, total_runs_scored_7 = game_repeater(1000,12)
-  game_summary.loc[6] = [teams[12], teams[13], home_win_odds_7, home_pythagwin_odds_7, away_runs_scored_7, home_runs_scored_7, total_runs_scored_7]
+  away_box_score_total_7, home_box_score_total_7, home_win_odds_7, home_pythagwin_odds_7, away_runs_scored_7, home_runs_scored_7, total_runs_scored_7 = game_repeater(1000,12,teams[0][12],teams[0][13])
+  game_summary.loc[6] = [teams[0][12], teams[0][13], home_win_odds_7, home_pythagwin_odds_7, away_runs_scored_7, home_runs_scored_7, total_runs_scored_7]
   
 if len(teams) >= 16:                                               
-  away_box_score_total_8, home_box_score_total_8, home_win_odds_8, home_pythagwin_odds_8, away_runs_scored_8, home_runs_scored_8, total_runs_scored_8 = game_repeater(1000,14)
-  game_summary.loc[7] = [teams[14], teams[15], home_win_odds_8, home_pythagwin_odds_8, away_runs_scored_8, home_runs_scored_1, total_runs_scored_8]
+  away_box_score_total_8, home_box_score_total_8, home_win_odds_8, home_pythagwin_odds_8, away_runs_scored_8, home_runs_scored_8, total_runs_scored_8 = game_repeater(1000,14,teams[0][14],teams[0][15])
+  game_summary.loc[7] = [teams[0][14], teams[0][15], home_win_odds_8, home_pythagwin_odds_8, away_runs_scored_8, home_runs_scored_1, total_runs_scored_8]
   
 if len(teams) >= 18:                                               
-  away_box_score_total_9, home_box_score_total_9, home_win_odds_9, home_pythagwin_odds_9, away_runs_scored_9, home_runs_scored_9, total_runs_scored_9 = game_repeater(1000,16)
-  game_summary.loc[8] = [teams[16], teams[17], home_win_odds_9, home_pythagwin_odds_9, away_runs_scored_9, home_runs_scored_9, total_runs_scored_9]
+  away_box_score_total_9, home_box_score_total_9, home_win_odds_9, home_pythagwin_odds_9, away_runs_scored_9, home_runs_scored_9, total_runs_scored_9 = game_repeater(1000,16,teams[0][16],teams[0][17])
+  game_summary.loc[8] = [teams[0][16], teams[0][17], home_win_odds_9, home_pythagwin_odds_9, away_runs_scored_9, home_runs_scored_9, total_runs_scored_9]
   
 if len(teams) >= 20:                                               
-  away_box_score_total_10, home_box_score_total_10, home_win_odds_10, home_pythagwin_odds_10, away_runs_scored_10, home_runs_scored_10, total_runs_scored_10 = game_repeater(1000,18)
-  game_summary.loc[9] = [teams[18], teams[19], home_win_odds_10, home_pythagwin_odds_10, away_runs_scored_10, home_runs_scored_10, total_runs_scored_10]
+  away_box_score_total_10, home_box_score_total_10, home_win_odds_10, home_pythagwin_odds_10, away_runs_scored_10, home_runs_scored_10, total_runs_scored_10 = game_repeater(1000,18,teams[0][18],teams[0][19])
+  game_summary.loc[9] = [teams[0][18], teams[0][19], home_win_odds_10, home_pythagwin_odds_10, away_runs_scored_10, home_runs_scored_10, total_runs_scored_10]
   
 if len(teams) >= 22:                                               
-  away_box_score_total_11, home_box_score_total_11, home_win_odds_11, home_pythagwin_odds_11, away_runs_scored_11, home_runs_scored_11, total_runs_scored_11 = game_repeater(1000,20)
-  game_summary.loc[10] = [teams[21], teams[20], home_win_odds_11, home_pythagwin_odds_11, away_runs_scored_11, home_runs_scored_11, total_runs_scored_11]
+  away_box_score_total_11, home_box_score_total_11, home_win_odds_11, home_pythagwin_odds_11, away_runs_scored_11, home_runs_scored_11, total_runs_scored_11 = game_repeater(1000,20,teams[0][20],teams[0][21])
+  game_summary.loc[10] = [teams[0][21], teams[0][20], home_win_odds_11, home_pythagwin_odds_11, away_runs_scored_11, home_runs_scored_11, total_runs_scored_11]
   
 if len(teams) >= 24:                                               
-  away_box_score_total_12, home_box_score_total_12, home_win_odds_12, home_pythagwin_odds_12, away_runs_scored_12, home_runs_scored_12, total_runs_scored_12 = game_repeater(1000,22)
-  game_summary.loc[11] = [teams[22], teams[23], home_win_odds_12, home_pythagwin_odds_12, away_runs_scored_12, home_runs_scored_12, total_runs_scored_12]
+  away_box_score_total_12, home_box_score_total_12, home_win_odds_12, home_pythagwin_odds_12, away_runs_scored_12, home_runs_scored_12, total_runs_scored_12 = game_repeater(1000,22,teams[0][22],teams[0][23])
+  game_summary.loc[11] = [teams[0][22], teams[0][23], home_win_odds_12, home_pythagwin_odds_12, away_runs_scored_12, home_runs_scored_12, total_runs_scored_12]
   
 if len(teams) >= 26:                                               
-  away_box_score_total_13, home_box_score_total_13, home_win_odds_13, home_pythagwin_odds_13, away_runs_scored_13, home_runs_scored_13, total_runs_scored_13 = game_repeater(1000,24)
-  game_summary.loc[12] = [teams[24], teams[25], home_win_odds_13, home_pythagwin_odds_13, away_runs_scored_13, home_runs_scored_13, total_runs_scored_13]
+  away_box_score_total_13, home_box_score_total_13, home_win_odds_13, home_pythagwin_odds_13, away_runs_scored_13, home_runs_scored_13, total_runs_scored_13 = game_repeater(1000,24,teams[0][24],teams[0][25])
+  game_summary.loc[12] = [teams[0][24], teams[0][25], home_win_odds_13, home_pythagwin_odds_13, away_runs_scored_13, home_runs_scored_13, total_runs_scored_13]
   
 if len(teams) >= 28:                                               
-  away_box_score_total_14, home_box_score_total_14, home_win_odds_14, home_pythagwin_odds_14, away_runs_scored_14, home_runs_scored_14, total_runs_scored_14 = game_repeater(1000,26)
-  game_summary.loc[13] = [teams[26], teams[27], home_win_odds_14, home_pythagwin_odds_14, away_runs_scored_14, home_runs_scored_14, total_runs_scored_14]
+  away_box_score_total_14, home_box_score_total_14, home_win_odds_14, home_pythagwin_odds_14, away_runs_scored_14, home_runs_scored_14, total_runs_scored_14 = game_repeater(1000,26,teams[0][26],teams[0][27])
+  game_summary.loc[13] = [teams[0][26], teams[0][27], home_win_odds_14, home_pythagwin_odds_14, away_runs_scored_14, home_runs_scored_14, total_runs_scored_14]
   
 if len(teams) >= 30:                                               
-  away_box_score_total_15, home_box_score_total_15, home_win_odds_15, home_pythagwin_odds_15, away_runs_scored_15, home_runs_scored_15, total_runs_scored_15 = game_repeater(1000,28)
-  game_summary.loc[14] = [teams[28], teams[29], home_win_odds_15, home_pythagwin_odds_15, away_runs_scored_15, home_runs_scored_15, total_runs_scored_15]
+  away_box_score_total_15, home_box_score_total_15, home_win_odds_15, home_pythagwin_odds_15, away_runs_scored_15, home_runs_scored_15, total_runs_scored_15 = game_repeater(1000,28,teams[0][28],teams[0][29])
+  game_summary.loc[14] = [teams[0][28], teams[0][29], home_win_odds_15, home_pythagwin_odds_15, away_runs_scored_15, home_runs_scored_15, total_runs_scored_15]
   
 if len(teams) >= 32:                                               
-  away_box_score_total_16, home_box_score_total_16, home_win_odds_16, home_pythagwin_odds_16, away_runs_scored_16, home_runs_scored_16, total_runs_scored_16 = game_repeater(1000,30)
-  game_summary.loc[15] = [teams[30], teams[31], home_win_odds_16, home_pythagwin_odds_16, away_runs_scored_16, home_runs_scored_16, total_runs_scored_16]
+  away_box_score_total_16, home_box_score_total_16, home_win_odds_16, home_pythagwin_odds_16, away_runs_scored_16, home_runs_scored_16, total_runs_scored_16 = game_repeater(1000,30,teams[0][30],teams[0][31])
+  game_summary.loc[15] = [teams[0][30], teams[0][31], home_win_odds_16, home_pythagwin_odds_16, away_runs_scored_16, home_runs_scored_16, total_runs_scored_16]
   
 if len(teams) >= 34:                                               
-  away_box_score_total_17, home_box_score_total_17, home_win_odds_17, home_pythagwin_odds_17, away_runs_scored_17, home_runs_scored_17, total_runs_scored_17 = game_repeater(1000,32)
-  game_summary.loc[16] = [teams[32], teams[33], home_win_odds_17, home_pythagwin_odds_17, away_runs_scored_17, home_runs_scored_17, total_runs_scored_17]
+  away_box_score_total_17, home_box_score_total_17, home_win_odds_17, home_pythagwin_odds_17, away_runs_scored_17, home_runs_scored_17, total_runs_scored_17 = game_repeater(1000,32,teams[0][32],teams[0][33])
+  game_summary.loc[16] = [teams[0][32], teams[0][33], home_win_odds_17, home_pythagwin_odds_17, away_runs_scored_17, home_runs_scored_17, total_runs_scored_17]
   
 if len(teams) >= 36:                                               
-  away_box_score_total_18, home_box_score_total_18, home_win_odds_18, home_pythagwin_odds_18, away_runs_scored_18, home_runs_scored_18, total_runs_scored_18 = game_repeater(1000,34)
-  game_summary.loc[17] = [teams[34], teams[35], home_win_odds_18, home_pythagwin_odds_18, away_runs_scored_18, home_runs_scored_18, total_runs_scored_18]
+  away_box_score_total_18, home_box_score_total_18, home_win_odds_18, home_pythagwin_odds_18, away_runs_scored_18, home_runs_scored_18, total_runs_scored_18 = game_repeater(1000,34,teams[0][34],teams[0][35])
+  game_summary.loc[17] = [teams[0][34], teams[0][35], home_win_odds_18, home_pythagwin_odds_18, away_runs_scored_18, home_runs_scored_18, total_runs_scored_18]
   
 if len(teams) >= 38:                                               
-  away_box_score_total_19, home_box_score_total_19, home_win_odds_19, home_pythagwin_odds_19, away_runs_scored_19, home_runs_scored_19, total_runs_scored_19 = game_repeater(1000,36)
-  game_summary.loc[18] = [teams[36], teams[37], home_win_odds_19, home_pythagwin_odds_19, away_runs_scored_19, home_runs_scored_19, total_runs_scored_19]
+  away_box_score_total_19, home_box_score_total_19, home_win_odds_19, home_pythagwin_odds_19, away_runs_scored_19, home_runs_scored_19, total_runs_scored_19 = game_repeater(1000,36,teams[0][36],teams[0][37])
+  game_summary.loc[18] = [teams[0][36], teams[0][37], home_win_odds_19, home_pythagwin_odds_19, away_runs_scored_19, home_runs_scored_19, total_runs_scored_19]
   
 if len(teams) >= 40:                                               
-  away_box_score_total_20, home_box_score_total_20, home_win_odds_20, home_pythagwin_odds_20, away_runs_scored_20, home_runs_scored_20, total_runs_scored_20 = game_repeater(1000,38)
-  game_summary.loc[19] = [teams[38], teams[39], home_win_odds_20, home_pythagwin_odds_20, away_runs_scored_20, home_runs_scored_20, total_runs_scored_20]
+  away_box_score_total_20, home_box_score_total_20, home_win_odds_20, home_pythagwin_odds_20, away_runs_scored_20, home_runs_scored_20, total_runs_scored_20 = game_repeater(1000,38,teams[0][38],teams[0][39])
+  game_summary.loc[19] = [teams[0][38], teams[0][39], home_win_odds_20, home_pythagwin_odds_20, away_runs_scored_20, home_runs_scored_20, total_runs_scored_20]
   
 stop = timeit.default_timer()
 
