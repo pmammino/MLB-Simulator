@@ -110,8 +110,8 @@ def game_repeater(num_sims, lineup_num,away_team,home_team):
     away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(lineup_num)
     away_box_score_total = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
     home_box_score_total = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
-    away_pitcher_box_score_total = pandas.DataFrame({'Name' : away_pitcher['name'].tolist(),'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'PA', 'H', 'BB','R', 'K'])
-    home_pitcher_box_score_total = pandas.DataFrame({'Name' : home_pitcher['name'].tolist(),'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'PA', 'H', 'BB','R', 'K'])
+    away_pitcher_box_score_total = pandas.DataFrame({'Name' : away_pitcher['name'].tolist(),'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'IP', 'H', 'BB','R', 'K'])
+    home_pitcher_box_score_total = pandas.DataFrame({'Name' : home_pitcher['name'].tolist(),'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'IP', 'H', 'BB','R', 'K'])
     home_wins = 0
     
     for i in range(num_sims):
@@ -164,8 +164,8 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
     home_bullpen_usage = bullpens_usage.loc[bullpens_usage['Team'] == home_team]
     away_box_score = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
     home_box_score = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
-    away_pitcher_box_score = pandas.DataFrame({'Name' : away_pitcher['name'].tolist(),'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'PA', 'H', 'BB','R', 'K'])
-    home_pitcher_box_score = pandas.DataFrame({'Name' : home_pitcher['name'].tolist(),'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'PA', 'H', 'BB','R', 'K'])
+    away_pitcher_box_score = pandas.DataFrame({'Name' : away_pitcher['name'].tolist(),'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'IP', 'H', 'BB','R', 'K'])
+    home_pitcher_box_score = pandas.DataFrame({'Name': home_pitcher['name'].tolist() ,'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'IP', 'H', 'BB','R', 'K'])
     
     
     while (inning < 10):
@@ -333,7 +333,7 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
             if(home_pitcher_type == 'starter'):
                 home_pitcher_box_score['H'] = home_pitcher_box_score['H'] + 1
             if (home_pitcher_type == 'starter' and home_starter_pc > home_pitcher.at[0,"Pit/GS"]):
-              home_pitcher_type == 'bullpen'                                      
+              home_pitcher_type = 'bullpen'                                      
           
           if (away_batter == 8):
             away_batter = 0
@@ -506,7 +506,7 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
             if(away_pitcher_type == 'starter'):
                 away_pitcher_box_score['H'] = away_pitcher_box_score['H'] + 1
             if (away_pitcher_type == 'starter' and away_starter_pc > away_pitcher.at[0,"Pit/GS"]):
-              away_pitcher_type == 'bullpen'
+              away_pitcher_type = 'bullpen'
 
           if (home_batter == 8):
             home_batter = 0
@@ -762,3 +762,4 @@ if len(teams) >= 40:
 stop = timeit.default_timer()
 
 print(stop - start)
+
