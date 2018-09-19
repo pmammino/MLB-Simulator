@@ -22,7 +22,7 @@ def at_bat(pitcher,bullpen,bullpen_usage,pitcher_type, hitter):
          handedness = np.random.choice(["R","L"], 1, p=[bullpen_usage.at[0,"vRHH"],1-bullpen_usage.at[0,"vRHH"]])
        else:
          handedness = np.random.choice(["R","L"], 1, p=[bullpen_usage.at[0,"vLHH"],1-bullpen_usage.at[0,"vLHH"]])
-       pitcher = bullpen.loc[bullpen['Throws'] == handedness]
+       pitcher = bullpen.loc[bullpen['Throws'] == handedness[0]].reset_index(drop = True)
     if pitcher.at[0,"Throws"] == "R":
        batter_p1b = hitter.at[0,"1bR"]
        batter_p2b = hitter.at[0,"2bR"]
@@ -158,10 +158,10 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
     home_starter_pc = 0
     away_pitcher_type = 'starter'
     home_pitcher_type = 'starter'
-    away_bullpen = bullpens.loc[bullpens['Team'] == away_team]
-    home_bullpen = bullpens.loc[bullpens['Team'] == home_team]
-    away_bullpen_usage = bullpens_usage.loc[bullpens_usage['Team'] == away_team]
-    home_bullpen_usage = bullpens_usage.loc[bullpens_usage['Team'] == home_team]
+    away_bullpen = bullpens.loc[bullpens['Team'] == away_team].reset_index(drop = True)
+    home_bullpen = bullpens.loc[bullpens['Team'] == home_team].reset_index(drop = True)
+    away_bullpen_usage = bullpens_usage.loc[bullpens_usage['Team'] == away_team].reset_index(drop = True)
+    home_bullpen_usage = bullpens_usage.loc[bullpens_usage['Team'] == home_team].reset_index(drop = True)
     away_box_score = pandas.DataFrame({'Name' : away_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H': [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R':[0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
     home_box_score = pandas.DataFrame({'Name' : home_lineup['name'].tolist(),'PA' : [0,0,0,0,0,0,0,0,0],'H' : [0,0,0,0,0,0,0,0,0],'BB' : [0,0,0,0,0,0,0,0,0],'Single' : [0,0,0,0,0,0,0,0,0],'Double' : [0,0,0,0,0,0,0,0,0],'Triple' : [0,0,0,0,0,0,0,0,0], 'HR' : [0,0,0,0,0,0,0,0,0], 'R' : [0,0,0,0,0,0,0,0,0], 'RBI' : [0,0,0,0,0,0,0,0,0]},columns = ['Name', 'PA', 'H', 'BB', 'Single', 'Double', 'Triple', 'HR', 'R', 'RBI'])
     away_pitcher_box_score = pandas.DataFrame({'Name' : away_pitcher['name'].tolist(),'IP' : [0],'H': [0],'BB' : [0],'R':[0], 'K' : [0]},columns = ['Name', 'IP', 'H', 'BB','R', 'K'])
@@ -320,7 +320,6 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
               if(home_pitcher_type == 'starter'):
                 home_pitcher_box_score['R'] = home_pitcher_box_score['R'] + 1
               first_base = ''
-            home_starter_pc = home_starter_pc + home_pitcher.at[0,"Pit/PA"]
             away_runs = away_runs + 1
             away_box_score['R'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['R'] + 1, away_box_score['R'])
             if(home_pitcher_type == 'starter'):
@@ -332,8 +331,11 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
             away_box_score['RBI'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['RBI'] + runs_diff, away_box_score['RBI'])                                                                                      
             if(home_pitcher_type == 'starter'):
                 home_pitcher_box_score['H'] = home_pitcher_box_score['H'] + 1
-            if (home_pitcher_type == 'starter' and home_starter_pc > home_pitcher.at[0,"Pit/GS"]):
-              home_pitcher_type = 'bullpen'                                      
+          
+          if(home_pitcher_type == 'starter'):  
+             home_starter_pc = home_starter_pc + home_pitcher.at[0,"Pit/PA"] 
+          if(home_pitcher_type == 'starter' and home_starter_pc > home_pitcher.at[0,"Pit/GS"]):
+             home_pitcher_type = 'bullpen'                                      
           
           if (away_batter == 8):
             away_batter = 0
@@ -342,8 +344,8 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
       
             
       half = 'bottom'
-      if (inning == 9 and half == 'bottom' and (home_runs > away_runs)):
-          break
+##      if (inning == 9 and half == 'bottom' and (home_runs > away_runs)):
+##          break
       if (half == 'bottom'):
         outs = 0
         first_base = ''
@@ -495,7 +497,6 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
               if(away_pitcher_type == 'starter'):
                 away_pitcher_box_score['R'] = away_pitcher_box_score['R'] + 1
               first_base = ''
-            away_starter_pc = away_starter_pc + away_pitcher.at[0,"Pit/PA"]
             home_runs = home_runs + 1
             home_box_score['R'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['R'] + 1, home_box_score['R'])
             runs_diff = home_runs - runs_before
@@ -505,7 +506,9 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
             home_box_score['RBI'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['RBI'] + runs_diff, home_box_score['RBI'])       
             if(away_pitcher_type == 'starter'):
                 away_pitcher_box_score['H'] = away_pitcher_box_score['H'] + 1
-            if (away_pitcher_type == 'starter' and away_starter_pc > away_pitcher.at[0,"Pit/GS"]):
+          if(away_pitcher_type == 'starter'):
+            away_starter_pc = away_starter_pc + away_pitcher.at[0,"Pit/PA"]
+          if (away_pitcher_type == 'starter' and away_starter_pc > away_pitcher.at[0,"Pit/GS"]):
               away_pitcher_type = 'bullpen'
 
           if (home_batter == 8):
@@ -575,6 +578,7 @@ for i in soup2.select('.shrt'):
     list3.append(i.text)
     
 teams = pandas.DataFrame(list3)
+teams[0] = np.where(teams[0]== 'WAS', 'WSN', teams[0])
 
 res3 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
 soup3 = bs4.BeautifulSoup(res3.text, 'lxml')
