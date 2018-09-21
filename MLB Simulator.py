@@ -177,7 +177,7 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
         while (outs < 3):
           pa_result = at_bat(home_pitcher,home_bullpen,home_bullpen_usage,home_pitcher_type,pandas.DataFrame(away_lineup.iloc[away_batter]).T.reset_index(drop = True))
           
-          if(pa_result == 'k'):
+          if(pa_result == 'so'):
             outs = outs + 1
             away_box_score['PA'] = np.where(away_box_score['Name']==away_lineup.at[away_batter,"name"], away_box_score['PA'] + 1, away_box_score['PA'])
             if(home_pitcher_type == 'starter'):
@@ -361,7 +361,7 @@ def game_sim(away_team, home_team,away_lineup, home_lineup, away_pitcher, home_p
               away_pitcher_box_score['K'] = away_pitcher_box_score['K'] + 1
               away_pitcher_box_score['IP'] = away_pitcher_box_score['IP'] + (1/3)
             
-          if(pa_result == 'bo' or pa_result == 'so'):
+          if(pa_result == 'bo'):
             outs = outs + 1
             home_box_score['PA'] = np.where(home_box_score['Name']==home_lineup.at[home_batter,"name"], home_box_score['PA'] + 1, home_box_score['PA'])
             if(away_pitcher_type == 'starter'):
@@ -762,7 +762,9 @@ if len(teams) >= 38:
 if len(teams) >= 40:                                               
   away_box_score_total_20, home_box_score_total_20, away_pitcher_box_score_total_20, home_pitcher_box_score_total_20, home_win_odds_20, home_pythagwin_odds_20, away_runs_scored_20, home_runs_scored_20, total_runs_scored_20 = game_repeater(1000,38,teams[0][38],teams[0][39])
   game_summary.loc[19] = [teams[0][38], teams[0][39], home_win_odds_20, home_pythagwin_odds_20, away_runs_scored_20, home_runs_scored_20, total_runs_scored_20]
+
   
+
 stop = timeit.default_timer()
 
 print(stop - start)
