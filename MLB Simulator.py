@@ -540,7 +540,7 @@ per_at_bat_pitch_counts = pandas.read_excel("PitchCount.xlsx",sheetname = "Pitch
 #
 # pull lineups from Rotogrinders
 
-res = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
+res = requests.get('https://rotogrinders.com/lineups/mlb?date=2018-10-17&site=draftkings')
 soup = bs4.BeautifulSoup(res.text, 'lxml')
 
 list1 = []
@@ -569,7 +569,7 @@ pitchers.columns = ["name"]
 #
 # pull teams from Rotogrinders
 
-res2 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
+res2 = requests.get('https://rotogrinders.com/lineups/mlb?date=2018-10-17&site=draftkings')
 soup2 = bs4.BeautifulSoup(res2.text, 'lxml')
 
 list3 = []
@@ -580,7 +580,7 @@ for i in soup2.select('.shrt'):
 teams = pandas.DataFrame(list3)
 teams[0] = np.where(teams[0]== 'WAS', 'WSN', teams[0])
 
-res3 = requests.get('https://rotogrinders.com/lineups/mlb?site=fanduel')
+res3 = requests.get('https://rotogrinders.com/lineups/mlb?date=2018-10-17&site=draftkings')
 soup3 = bs4.BeautifulSoup(res3.text, 'lxml')
 
 list4 = []
@@ -764,7 +764,6 @@ if len(teams) >= 40:
   game_summary.loc[19] = [teams[0][38], teams[0][39], home_win_odds_20, home_pythagwin_odds_20, away_runs_scored_20, home_runs_scored_20, total_runs_scored_20]
 
   
-
 stop = timeit.default_timer()
 
 print(stop - start)
