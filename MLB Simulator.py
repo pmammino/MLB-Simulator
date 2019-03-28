@@ -16,13 +16,7 @@ def set_lineups(n):
   home_pitcher = pandas.DataFrame(pitchers.iloc[n+1]).T.reset_index(drop = True)
   return(away_lineup, home_lineup, away_pitcher, home_pitcher)
 
-def at_bat(pitcher,bullpen,bullpen_usage,pitcher_type, hitter):
-    if pitcher_type == 'bullpen':
-       if hitter.at[0,"Bats"] == "R":
-         handedness = np.random.choice(["R","L"], 1, p=[bullpen_usage.at[0,"vRHH"],1-bullpen_usage.at[0,"vRHH"]])
-       else:
-         handedness = np.random.choice(["R","L"], 1, p=[bullpen_usage.at[0,"vLHH"],1-bullpen_usage.at[0,"vLHH"]])
-       pitcher = bullpen.loc[bullpen['Throws'] == handedness[0]].reset_index(drop = True)
+def at_bat(pitcher,hitter):
     if pitcher.at[0,"Throws"] == "R":
        batter_p1b = hitter.at[0,"1bR"]
        batter_p2b = hitter.at[0,"2bR"]
@@ -90,12 +84,10 @@ def at_bat(pitcher,bullpen,bullpen_usage,pitcher_type, hitter):
     npso = pso / total
     npbo = pbo / total
     
-    results = ['1b', '2b', '3b', 'hr', 'bb', 'so', 'bo']
+    probs = ['1b', '2b', '3b', 'hr', 'bb', 'so', 'bo']
     probs = [np1b, np2b, np3b, nphr, npbb, npso, npbo]
     
-    result = np.random.choice(results, 1, p=probs)
-    
-    return(result)
+    return(probs)
   
 def moneyline_odds_calc(implied_prob):
   implied_prob_convert = implied_prob * 100
@@ -680,6 +672,10 @@ pitchers = pitchers.drop('Name_y',axis = 1)
 
 n = 9  #chunk row size
 list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]  
+away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)
+
+results = at_bat(home_pitcher,pandas.DataFrame(away_lineup.iloc[0]).T.reset_index(drop = True))
+print(results)
 
 game_summary = pandas.DataFrame(columns=['Away Team', 'Home Team', 'Home Odds', 'Home Pythag Odds', 'Away Runs', 'Home Runs', 'Total Runs'])
 
