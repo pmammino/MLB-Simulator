@@ -1,3 +1,37 @@
+### league averages 2018 only
+league_1B = 26322 / 185139
+league_2B = 8264 / 185139
+league_3B = 847 / 185139
+league_HR = 5585 / 185139
+league_BB = 15686 / 185139
+league_K = 41207 / 185139
+league_BO = 1 - league_1B - league_2B - league_3B - league_HR - league_BB - league_K
+
+### baserunning data
+single_1Bto2B = 157 / 245
+single_1Bto3B = 84 / 245
+single_1BtoOUT = 1 - single_1Bto2B - single_1Bto3B
+single1B_results = ["second_base", "third_base", "out"]
+single1B_probs = [single_1Bto2B, single_1Bto3B, single_1BtoOUT]
+
+
+double_1Bto3B = 35 / 69
+double_1BtoH = 33 / 69
+double_1BtoOUT = 1 - double_1Bto3B - double_1BtoH
+double1B_results = ["third_base", "score", "out"]
+double1B_probs = [double_1Bto3B, double_1BtoH, double_1BtoOUT]
+
+single_2Bto3B = 44 / 130
+single_2BtoH = 81 / 130
+single_2BtoOUT = 1 - single_2Bto3B - single_2BtoH
+single2B_results = ["third_base", "score", "out"]
+single2B_probs = [single_2Bto3B, single_2BtoH, single_2BtoOUT]
+
+
+
+
+
+
 def game_sim(away_team, home_team, away_lineup, home_lineup, away_pitcher, home_pitcher):
     inning = 1
     half = 'top'
