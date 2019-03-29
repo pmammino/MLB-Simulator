@@ -672,8 +672,8 @@ pitchers = pitchers.drop('Name_y',axis = 1)
 
 n = 9  #chunk row size
 list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]  
-away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)
 
+away_lineup, home_lineup, away_pitcher, home_pitcher = set_lineups(0)
 results = at_bat(home_pitcher,pandas.DataFrame(away_lineup.iloc[0]).T.reset_index(drop = True))
 print(results)
 
