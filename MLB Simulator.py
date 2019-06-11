@@ -669,7 +669,8 @@ pitchers = pitchers.drop_duplicates(subset = ['name'])
 pitchers = pitchers.drop('Name_x',axis = 1)
 pitchers = pitchers.drop('Name_y',axis = 1)
 
-
+stop = timeit.default_timer()
+print('Data Manipulation Time:' + stop - start)
 n = 9  #chunk row size
 list_lineups = [lineups_merged[i:i+n] for i in range(0,lineups_merged.shape[0],n)]  
 
@@ -679,6 +680,7 @@ print(results)
 
 game_summary = pandas.DataFrame(columns=['Away Team', 'Home Team', 'Home Odds', 'Home Pythag Odds', 'Away Runs', 'Home Runs', 'Total Runs'])
 
+start = timeit.default_timer()
 if len(teams) >= 2:                                               
   away_box_score_total_1, home_box_score_total_1,away_pitcher_box_score_total_1, home_pitcher_box_score_total_1, home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1 = game_repeater(1000,0,teams[0][0],teams[0][1])
   game_summary.loc[0] = [teams[0][0], teams[0][1], home_win_odds_1, home_pythagwin_odds_1, away_runs_scored_1, home_runs_scored_1, total_runs_scored_1]
@@ -762,5 +764,5 @@ if len(teams) >= 40:
   
 stop = timeit.default_timer()
 
-print(stop - start)
+print('Sim Time:' + stop - start)
 
