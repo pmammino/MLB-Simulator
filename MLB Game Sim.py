@@ -82,9 +82,9 @@ y = (innings * 3) * num_sims
 # half inning which calculates runs and interates until there are 3 outs
 start_time = time.time()
 
-if away_outs < y or home_outs < y:
+while away_outs < y or home_outs < y:
       
-    while away_outs < y:
+    if away_outs < y:
         
         if x <= away_lineup[away_order]['xout']:
             away_outs = away_outs + 1
@@ -233,7 +233,7 @@ if away_outs < y or home_outs < y:
         if away_order == 10:
             away_order = 1
       
-    while home_outs < y:
+    if home_outs < y:
          
         if x <= home_lineup[home_order]['xout']:
             home_outs = home_outs + 1
