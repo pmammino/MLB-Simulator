@@ -1,6 +1,7 @@
 import pandas as pd
 import time
 import random
+import numpy as np
 
 lineup = pd.read_csv("MLB Lineup Sim Tool.csv")
 away_team = "DET"
@@ -73,6 +74,8 @@ runs_previous = 0
 home_runs = 0
 away_order = 1
 home_order = 1
+away_game_count = -2
+home_game_count = -1
 
 away_wins = 0
 home_wins = 0
@@ -80,8 +83,9 @@ ties = 0
 
 
 
-innings = 5
+innings = 9
 num_sims = 100000
+scores = [None,None] * num_sims
 x = random.randint(0,100000)
 y = (innings * 3) * num_sims
 
@@ -102,9 +106,10 @@ while away_outs < y or home_outs < y:
                 third = 0
             if away_outs % (innings * 3) == 0:
                 away_order = 1
-                
+                away_game_count = away_game_count + 2
                 away_runs_game = away_runs - away_runs_previous
                 away_runs_previous = away_runs
+                scores[away_game_count] = away_runs_game
        
         elif x > away_lineup[away_order]['xout'] and x < away_lineup[away_order]['xbb']:
             if first == 0 and second == 0 and third == 0:
@@ -254,9 +259,10 @@ while away_outs < y or home_outs < y:
                 third = 0
             if home_outs % (innings * 3) == 0:
                 home_order = 1
-                
+                home_game_count = home_game_count + 2
                 runs_game = runs - runs_previous
                 runs_previous = runs
+                scores[home_game_count] = runs_game
        
         elif x > home_lineup[home_order]['xout'] and x < home_lineup[home_order]['xbb']:
             if first == 0 and second == 0 and third == 0:
@@ -395,14 +401,6 @@ while away_outs < y or home_outs < y:
         home_order = home_order + 1
         if home_order == 10:
             home_order = 1
-        
-        if away_outs % (innings * 3) == 0 and home_outs % (innings * 3) == 0:
-            if runs_game > away_runs_game:
-                home_wins = home_wins + 1
-            if runs_game < away_runs_game:
-                away_wins = away_wins + 1
-            else:
-                ties = ties + 1
             
 
 hfa = .153
@@ -426,7 +424,7 @@ else:
 
 if innings == 9:
     print("Full game results...")
-if innings == 5:
+elif innings == 5:
     print("First five results...")
 else:
     print("First inning results...")
@@ -445,3 +443,10 @@ if clock >= 60:
 else:
     print("The " + str(num_sims) + " simulations took " + str(round(clock, 4)) + " seconds to complete.")
 
+scores = np.array(scores).reshape(-1, 2)
+diff = (np.matrix((scores[:,0])) - np.matrix((scores[:,1]))).tolist()
+away_wins = sum(i > 0 for i in diff[0])
+home_wins = sum(i < 0 for i in diff[0])
+ties = sum(i == 0 for i in diff[0])
+home_win_percent = (home_wins*1.0)/((home_wins+away_wins)*1.0)
+away_win_percent = (away_wins*1.0)/((home_wins+away_wins)*1.0)
