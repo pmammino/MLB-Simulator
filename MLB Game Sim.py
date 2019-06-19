@@ -82,9 +82,10 @@ y = (innings * 3) * num_sims
 # half inning which calculates runs and interates until there are 3 outs
 start_time = time.time()
 
-while away_outs < y and home_outs < y:
+if away_outs < y or home_outs < y:
       
     while away_outs < y:
+        
         if x <= away_lineup[away_order]['xout']:
             away_outs = away_outs + 1
             x = random.randint(0,100000)
@@ -232,7 +233,6 @@ while away_outs < y and home_outs < y:
         if away_order == 10:
             away_order = 1
       
-#while home_outs < y:
     while home_outs < y:
          
         if x <= home_lineup[home_order]['xout']:
@@ -414,8 +414,5 @@ if clock >= 60:
     print("The simulation took " + str(round(clock / 60, 4)) + " minutes to complete.")
 else:
     print("The simulation took " + str(round(clock, 4)) + " seconds to complete.")
-
-
-
 
 
