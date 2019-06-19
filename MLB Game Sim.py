@@ -83,8 +83,8 @@ y = (innings * 3) * num_sims
 start_time = time.time()
 
 while away_outs < y and home_outs < y:
-       
-     if away_outs < y:   
+      
+    while away_outs < y:
         if x <= away_lineup[away_order]['xout']:
             away_outs = away_outs + 1
             x = random.randint(0,100000)
@@ -233,8 +233,8 @@ while away_outs < y and home_outs < y:
             away_order = 1
       
 #while home_outs < y:
-      
-      if home_outs < y: 
+    while home_outs < y:
+         
         if x <= home_lineup[home_order]['xout']:
             home_outs = home_outs + 1
             x = random.randint(0,100000)
